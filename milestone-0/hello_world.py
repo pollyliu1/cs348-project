@@ -9,7 +9,6 @@ conn = mysql.connector.connect(
 
 cursor = conn.cursor()
 
-# Run a query
 cursor.execute("SELECT * FROM Pokemon;")
 for row in cursor.fetchall():
     print(row)
