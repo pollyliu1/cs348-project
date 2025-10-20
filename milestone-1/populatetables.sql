@@ -1,0 +1,16 @@
+INSERT INTO Pokemon
+SELECT pokedex_number,
+	   name,
+	   type1,
+	   type2,
+	   height_m as height,
+	   weight_kg as weight,
+	   abilities,
+	   base_happiness,
+	   hp,
+	   attack,
+	   defense,
+	   speed,
+	   generation,
+	   is_legendary,
+FROM read_csv('./pokemon.csv');
