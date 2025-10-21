@@ -20,7 +20,7 @@ export default function SearchBar({ onResults, onStart, onError }: Props) {
     try {
       onStart?.();
       setLoading(true);
-      const r = await fetch(`/api/search-name?name=${encodeURIComponent(q)}`);
+      const r = await fetch(`/api/search-pokemon?name=${encodeURIComponent(q)}`);
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const data = (await r.json()) as ApiPokemon[];
       onResults?.(data);

@@ -7,14 +7,14 @@ type Props = {
 };
 
 export default function Wiki({ pokemon: initialData }: Props) {
-  // const [pokemon, setPokemon] = useState<ApiPokemon[]>(initialData ?? []);
-  const [pokemon, setPokemon] = useState([
-    { name: "Stanley", type1: "Fire", type2: "Water", pokedex_number: 999 },
-    { name: "Polly", type1: "Fire", type2: "Water", pokedex_number: 9 },
-    { name: "Mindy", type1: "Fire", type2: "Water", pokedex_number: 99 },
-    { name: "Andy", type1: "Fire", type2: "Water", pokedex_number: 1 },
-    { name: "Musab", type1: "Fire", type2: "Water", pokedex_number: 2 },
-  ]);
+  const [pokemon, setPokemon] = useState<ApiPokemon[]>(initialData ?? []);
+  // const [pokemon, setPokemon] = useState([
+  //   { name: "Stanley", type1: "Fire", type2: "Water", pokedex_number: 999 },
+  //   { name: "Polly", type1: "Fire", type2: "Water", pokedex_number: 9 },
+  //   { name: "Mindy", type1: "Fire", type2: "Water", pokedex_number: 99 },
+  //   { name: "Andy", type1: "Fire", type2: "Water", pokedex_number: 1 },
+  //   { name: "Musab", type1: "Fire", type2: "Water", pokedex_number: 2 },
+  // ]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [searchActive, setSearchActive] = useState<boolean>(false);

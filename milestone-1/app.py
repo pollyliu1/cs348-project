@@ -1,14 +1,28 @@
 import mysql.connector
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request
 
 app = Flask(__name__)
 
 @app.route("/")
-def hello_world():
-	return send_from_directory(app.root_path, "index.html")
+def index():
+    return send_from_directory("frontend/dist/", "index.html")
 
-@app.route("/get_adopted")
-def get_adopted():
+@app.route("/<to>")
+def index2(to):
+    return send_from_directory("frontend/dist/", "index.html")
+
+@app.route("/assets/<file>")
+def assets(file):
+    return send_from_directory("frontend/dist/assets/", file)
+    
+@app.route("/fonts/<file>")
+def fonts(file):
+    return send_from_directory("frontend/dist/fonts", file)
+
+@app.route("/api/search-pokemon")
+def get_pokemon():
+    name = request.args.get("name", "")
+
     connection = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -17,7 +31,7 @@ def get_adopted():
     )
 
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM AdoptablePokemon;")
+    cursor.execute(f"SELECT * FROM Pokemon WHERE name LIKE '%{name}%';")
     col_names = [x[0] for x in cursor.description]
     data = []
 

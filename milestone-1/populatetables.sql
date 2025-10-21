@@ -14,22 +14,21 @@ IGNORE 1 LINES
  @experience_growth, @height_m, @hp, @japanese_name, @name, @percentage_male, @pokedex_number,
  @sp_attack, @sp_defense, @speed, @type1, @type2, @weight_kg, @generation, @is_legendary
 )
-
 SET
-  pokedex_number = NULLIF(@pokedex_number,''),
+  pokedex_number = @pokedex_number,
   name = @name,
   type1 = @type1,
-  type2 = NULLIF(@type2,''),
-  height = NULLIF(@height_m,''),
-  weight = NULLIF(@weight_kg,''),
-  generation = NULLIF(@generation,''),
-  is_legendary = NULLIF(@is_legendary,''),
+  type2 = @type2,
+  height = @height_m,
+  weight = @weight_kg,
+  generation = @generation,
+  is_legendary = @is_legendary,
   abilities = @abilities,
-  base_happiness = NULLIF(@base_happiness,''),
-  hp = NULLIF(@hp,''),
-  attack = NULLIF(@attack,''),
-  defense = NULLIF(@defense,''),
-  speed = NULLIF(@speed,'');
+  base_happiness = @base_happiness,
+  hp = @hp,
+  attack = @attack,
+  defense = @defense,
+  speed = @speed;
 
 INSERT INTO AdoptablePokemon (pid, pokedex_number, nickname, date_added, description, status)
 VALUES
@@ -44,15 +43,15 @@ VALUES
 (9, 150, 'MewtwoX', '2025-07-01', 'Powerful and mysterious Pokémon seeking a calm home.', 'taken'),
 (10, 151, 'Mewmie', '2025-10-14', 'Playful and rare Mew who loves to float around.', 'available');
 
-INSERT INTO AdoptionLogs (pokedex_number, pid, adopt_date, action_type)
+INSERT INTO AdoptionLogs (log_id, pokedex_number, pid, log_date, action_type)
 VALUES
-(1, 1, '2025-10-15', 'adopt'),
-(4, 2, '2025-09-29', 'adopt'),
-(4, 2, '2025-10-10', 'unadopt'),
-(7, 3, '2025-10-02', 'adopt'),
-(25, 4, '2025-09-16', 'adopt'),
-(39, 5, '2025-08-21', 'adopt'),
-(39, 5, '2025-09-10', 'unadopt'),
-(133, 6, '2025-10-07', 'adopt'),
-(150, 9, '2025-07-03', 'adopt'),
-(151, 10, '2025-10-15', 'adopt');
+(1, 1, 1, '2025-10-15', 'adopt'),
+(2, 4, 2, '2025-09-29', 'adopt'),
+(3, 4, 2, '2025-10-10', 'unadopt'),
+(4, 7, 3, '2025-10-02', 'adopt'),
+(5, 25, 4, '2025-09-16', 'adopt'),
+(6, 39, 5, '2025-08-21', 'adopt'),
+(7, 39, 5, '2025-09-10', 'unadopt'),
+(8, 133, 6, '2025-10-07', 'adopt'),
+(9, 150, 9, '2025-07-03', 'adopt'),
+(10, 151, 10, '2025-10-15', 'adopt');
