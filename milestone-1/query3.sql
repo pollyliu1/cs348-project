@@ -1,3 +1,5 @@
+USE PokeAdopt;
+
 INSERT INTO AdoptablePokemon (
     pid
     , pokedex_number

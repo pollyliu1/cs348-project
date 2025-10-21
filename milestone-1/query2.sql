@@ -1,8 +1,10 @@
+USE PokeAdopt;
+
 SELECT
     AdoptablePokemon.pid
     , AdoptablePokemon.pokedex_number
     , AdoptionLogs.action_type
-    , AdoptionLogs.adopt_date
+    , AdoptionLogs.log_date
 
 FROM AdoptablePokemon
 
@@ -10,6 +12,6 @@ JOIN AdoptionLogs
     ON AdoptablePokemon.pid = AdoptionLogs.pid
 
 WHERE AdoptionLogs.action_type = 'adopt'
-  AND DATEDIFF(CURRENT_DATE, AdoptionLogs.adopt_date) <= 30
+  AND DATEDIFF(CURRENT_DATE, AdoptionLogs.log_date) <= 30
 
-ORDER BY AdoptionLogs.adopt_date DESC;
+ORDER BY AdoptionLogs.log_date DESC;

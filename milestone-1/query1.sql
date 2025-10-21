@@ -1,4 +1,7 @@
 -- For example, search Pokémon with fire type and sort by base happiness descending
+
+USE PokeAdopt;
+
 SELECT
     pokedex_number
     , name
