@@ -18,17 +18,31 @@ SET
   pokedex_number = @pokedex_number,
   name = @name,
   type1 = @type1,
-  type2 = @type2,
-  height = @height_m,
-  weight = @weight_kg,
-  generation = @generation,
-  is_legendary = @is_legendary,
+  type2 = NULLIF(@type2, ''),
+  height = NULLIF(@height_m, ''),
+  weight = NULLIF(@weight_kg, ''),
+  generation = NULLIF(@generation, ''),
+  is_legendary = NULLIF(@is_legendary, ''),
   abilities = @abilities,
-  base_happiness = @base_happiness,
-  hp = @hp,
-  attack = @attack,
-  defense = @defense,
-  speed = @speed;
+  base_happiness = NULLIF(@base_happiness, ''),
+  hp = NULLIF(@hp, ''),
+  attack = NULLIF(@attack, ''),
+  defense = NULLIF(@defense, ''),
+  speed = NULLIF(@speed, '');
+
+INSERT INTO Adopter (uid, pref_abilities, pref_types)
+VALUES
+(1, '["Overgrow","Chlorophyll"]', '["Grass","Poison"]'),
+(4, '["Blaze","Solar Power"]', '["Fire"]'),
+(7, '["Torrent","Rain Dish"]', '["Water"]'),
+(10, '["Intimidate","Moxie"]', '["Dark"]'),
+(12, '["Compound Eyes","Tinted Lens"]', '["Bug","Flying"]'),
+(18, '["Keen Eye","Tangled Feet"]', '["Normal","Flying"]'),
+(25, '["Static","Lightning Rod"]', '["Electric"]'),
+(39, '["Cute Charm","Friend Guard"]', '["Normal","Fairy"]'),
+(133, '["Run Away","Adaptability","Anticipation"]', '["Normal"]'),
+(150, '["Pressure","Unnerve"]', '["Psychic"]'),
+(151, '["Synchronize"]', '["Psychic"]');
 
 INSERT INTO AdoptablePokemon (pid, pokedex_number, nickname, date_added, description, status)
 VALUES
@@ -43,7 +57,7 @@ VALUES
 (9, 150, 'MewtwoX', '2025-07-01', 'Powerful and mysterious Pokémon seeking a calm home.', 'taken'),
 (10, 151, 'Mewmie', '2025-10-14', 'Playful and rare Mew who loves to float around.', 'available');
 
-INSERT INTO AdoptionLogs (log_id, pokedex_number, pid, log_date, action_type)
+INSERT INTO AdoptionLogs (log_id, uid, pid, log_date, action_type)
 VALUES
 (1, 1, 1, '2025-10-15', 'adopt'),
 (2, 4, 2, '2025-09-29', 'adopt'),

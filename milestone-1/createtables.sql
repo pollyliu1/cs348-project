@@ -54,7 +54,7 @@ CREATE TABLE AdoptablePokemon (
 
 CREATE TABLE AdoptionLogs (
 	log_id INT NOT NULL PRIMARY KEY CHECK(log_id >= 0),
-	pokedex_number INT NOT NULL REFERENCES Pokemon(pokedex_number),
+	uid INT NOT NULL REFERENCES Adopter(uid),
 	pid INT NOT NULL REFERENCES AdoptablePokemon(pid),
 	log_date DATE NOT NULL,
 	action_type ENUM('adopt', 'unadopt') NOT NULL
