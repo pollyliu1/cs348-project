@@ -41,7 +41,7 @@ VALUES
 	(39, 'singsoftly', 'jiggly1234', 'Melody Puff'),
 	(133, 'evolveit', 'eevee1234', 'Evan Morph'),
 	(150, 'mindstorm', 'mewtwo1234', 'Mew Two'),
-	(151, 'floatdream', 'mew1234', 'Mia Dream'),
+	(151, 'floatdream', 'mew12345', 'Mia Dream'),
 	(200, 'adminmaster', 'rootpass1234', 'Professor Oak'),
 	(201, 'guestuser', 'guestpass1234', 'Tracey Sketchit');
 
