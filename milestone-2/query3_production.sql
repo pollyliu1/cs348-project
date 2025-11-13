@@ -9,7 +9,7 @@ INSERT INTO AdoptablePokemon (
     , status
 )
 VALUES (
-    11
+    161
     , 498
     , 'Fire Pig'
     , CURRENT_DATE
