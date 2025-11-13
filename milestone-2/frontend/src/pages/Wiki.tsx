@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import type { ApiPokemon } from "../types";
+import { NativeSelect } from "@chakra-ui/react";
 
 type Props = {
   pokemon?: ApiPokemon[]; // optional initial data
@@ -57,7 +58,7 @@ export default function Wiki({ pokemon: initialData }: Props) {
         Search for your favorite Pokémon
       </p>
 
-      <div>
+      <div className="">
         <SearchBar
           onStart={() => {
             setError("");

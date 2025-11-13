@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { ApiPokemon } from "../types";
+import { NativeSelect } from "@chakra-ui/react";
+import { POKEMON_TYPES } from "../constants/types";
 
 type Props = {
   onResults?: (rows: ApiPokemon[]) => void;
@@ -20,7 +22,9 @@ export default function SearchBar({ onResults, onStart, onError }: Props) {
     try {
       onStart?.();
       setLoading(true);
-      const r = await fetch(`/api/search-pokemon?name=${encodeURIComponent(q)}`);
+      const r = await fetch(
+        `/api/search-pokemon?name=${encodeURIComponent(q)}`
+      );
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const data = (await r.json()) as ApiPokemon[];
       onResults?.(data);
@@ -40,6 +44,18 @@ export default function SearchBar({ onResults, onStart, onError }: Props) {
         aria-label="Search by name"
         className="flex-1 rounded-xl border-2 px-4 placeholder:text-gray-200 text-white py-2 outline-none bg-transparent !fill-transparent border-white rounded-10"
       />
+      <div className="w-64">
+        <NativeSelect.Root>
+          <NativeSelect.Field className="border-white border-2 rounded-10 overflow-hidden px-4">
+            {POKEMON_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </NativeSelect.Field>
+          <NativeSelect.Indicator />
+        </NativeSelect.Root>
+      </div>
       <button
         type="submit"
         className="rounded-xl px-8 rounded-10 py-2 font-medium border-white border-2 fill-transparent disabled:opacity-60"
