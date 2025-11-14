@@ -84,3 +84,9 @@ ON AdoptionLogs(uid);
 
 -- Query 4: update by pid -> primary key index already exists, don't need extra index
 
+-- Query 5: top pokemon by adoption count query
+CREATE INDEX idx_adoptionlogs_pid
+ON AdoptionLogs(pid);
+
+CREATE INDEX idx_adoptablepokemon_pokedex
+ON AdoptablePokemon(pokedex_number);
