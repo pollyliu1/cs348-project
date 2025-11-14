@@ -1,8 +1,6 @@
-import { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import type { ApiPokemon } from "../types";
-import { NativeSelect } from "@chakra-ui/react";
-import { POKEMON_TYPES } from "../constants/types";
-
+import { twMerge } from "tailwind-merge";
 type Props = {
   onResults?: (rows: ApiPokemon[]) => void;
   onStart?: () => void;
@@ -44,18 +42,16 @@ export default function SearchBar({ onResults, onStart, onError }: Props) {
         aria-label="Search by name"
         className="flex-1 rounded-xl border-2 px-4 placeholder:text-gray-200 text-white py-2 outline-none bg-transparent !fill-transparent border-white rounded-10"
       />
-      <div className="w-64">
-        <NativeSelect.Root>
-          <NativeSelect.Field className="border-white border-2 rounded-10 overflow-hidden px-4">
-            {POKEMON_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </NativeSelect.Field>
-          <NativeSelect.Indicator />
-        </NativeSelect.Root>
-      </div>
+      <button
+        className={twMerge(
+          "rounded-xl px-8 rounded-10 py-2 font-medium border-white border-2  rounded-xl",
+          !q && "opacity-50 cursor-not-allowed"
+        )}
+        onClick={() => setQ("")}
+        disabled={!q}
+      >
+        Clear
+      </button>
       <button
         type="submit"
         className="rounded-xl px-8 rounded-10 py-2 font-medium border-white border-2 fill-transparent disabled:opacity-60"

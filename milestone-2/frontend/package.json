@@ -27,7 +27,8 @@
     "react-scroll": "^1.9.0",
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
-    "tailwind-merge": "^2.5.2"
+    "tailwind-merge": "^3.4.0",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

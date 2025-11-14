@@ -17,5 +17,4 @@ export const POKEMON_TYPES = [
   "Dark",
   "Steel",
   "Fairy",
-  "Stellar",
 ] as const;
