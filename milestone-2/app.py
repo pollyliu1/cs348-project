@@ -62,35 +62,43 @@ def validate_pokemon():
 def adoptable_pokemon():
 	return jsonify(run_query("SELECT * FROM AdoptablePokemon;"))
 
-@app.route("/api/adopt-pokemon")
-def adopt_pokemon():
-	pid = request.args.get("pid", "")
+@app.route("/api/adopt-pokemon/<int:pid>", methods=["PUT"])
+def adopt_pokemon(pid):
 	run_query("UPDATE AdoptablePokemon SET status = 'taken' WHERE pid = %s;", (pid,))
-	return ""
+	return jsonify({"success": True}), 200
 
-@app.route("/api/update-pokemon")
-def update_pokemon():
-	pid = request.args.get("pid", "")
-	nickname = request.args.get("nickname", "")
-	name = request.args.get("name", "")
-	description = request.args.get("description", "")
-	run_query(
-		"UPDATE AdoptablePokemon SET nickname = %s, pokedex_number = " +
-		"(SELECT pokedex_number FROM Pokemon WHERE name = %s), description = %s WHERE pid = %s;",
-		(nickname, name, description, pid)
-	)
-	return ""
+@app.route("/api/update-pokemon/<int:pid>", methods=["PUT"])
+def update_pokemon(pid):
+	data = request.json
+	nickname = data.get("nickname", "")
+	name = data.get("name", "")
+	description = data.get("description", "")
+	try:
+		run_query(
+			"UPDATE AdoptablePokemon SET nickname = %s, pokedex_number = " +
+			"(SELECT pokedex_number FROM Pokemon WHERE name = %s), description = %s WHERE pid = %s;",
+			(nickname, name, description, pid)
+		)
+		return jsonify({"success": True}), 200
+	except:
+		return jsonify({"error": "Invalid Pokemon name"}), 400
 
-@app.route("/api/add-pokemon")
+@app.route("/api/add-pokemon", methods=["POST"])
 def add_pokemon():
-	nickname = request.args.get("nickname", "")
-	name = request.args.get("name", "")
-	description = request.args.get("description", "")
-	run_query(
-		"INSERT INTO AdoptablePokemon (pokedex_number, nickname, date_added, description, status) " +
-		"VALUES ((SELECT pokedex_number FROM Pokemon WHERE name = %s), %s, CURDATE(), %s, 'available');",
-		(name, nickname, description)
-	)
+	data = request.json
+	nickname = data.get("nickname", "")
+	name = data.get("name", "")
+	description = data.get("description", "")
+	try:
+		run_query(
+			"INSERT INTO AdoptablePokemon (pokedex_number, nickname, date_added, description, status) " +
+			"VALUES ((SELECT pokedex_number FROM Pokemon WHERE name = %s), %s, CURDATE(), %s, 'available');",
+			(name, nickname, description)
+		)
+		
+		return jsonify({"success": True}), 201
+	except:
+		return jsonify({"error": "Invalid Pokemon name"}), 400
 	return ""
 
 if __name__ == "__main__":

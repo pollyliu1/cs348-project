@@ -4,9 +4,9 @@ import { Field, Input, Textarea, Button } from "@chakra-ui/react";
 type AdoptionFormProps = {
   handleSubmit: (data: {
     nickname: string;
-    pokemonName: string;
+    name: string;
     description: string;
-  }) => void;
+  }) => void | Promise<void>;
   isUpdate?: boolean;
   onClose?: () => void;
   existingData?: {
@@ -29,7 +29,7 @@ const AdoptionForm = ({
     const pokemonName = formData.get("pokemonName") as string;
     const description = formData.get("description") as string;
 
-    handleSubmit({ nickname, pokemonName, description });
+    handleSubmit({ nickname, name: pokemonName, description });
     onClose?.();
   };
 

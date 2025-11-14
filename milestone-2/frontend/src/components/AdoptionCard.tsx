@@ -3,31 +3,68 @@ import { Modal } from "./ui/modal";
 import AdoptionForm from "./AdoptionForm";
 import { useState } from "react";
 type AdoptionCardProps = {
+  pid: number,
 	nickname: string;
 	name: string; // actual pokemon name
 	description: string;
-	onResults: (data: any[]) => void;
+	status: "available" | "taken";
+	onResults: (data: any) => void;
 };
 
 export default function AdoptionCard({
+  pid,
 	nickname,
 	name,
 	description,
+	status,
 	onResults,
 }: AdoptionCardProps) {
 	const [modalOpen, setModalOpen] = useState(false);
-	const updatePokemon = (data: {
-		pid: number;
-		nickname: string;
-		pokemonName: string;
-		description: string;
-	}) => {
+	const updatePokemon = async (
+		data: {
+			nickname: string;
+			name: string;
+			description: string;
+		}
+	) => {
 		// api call to update pokemon details
-		// /api/update-pokemon?pid=${pid}&nickname=${nickname}&name=${pokemonName}&description=${description}
+		try {
+			const response = await fetch(`/api/update-pokemon/${pid}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to update Pokemon details");
+			}
+
+			onResults({pid, nickname, name, description});
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
-	const adoptPokemon = (data: { pid: number }) => {
-		// /api/adopt-pokemon?pid=${pid}
+	const adoptPokemon = async (data: { pid: number }) => {
+		try {
+			const response = await fetch(`/api/adopt-pokemon/${pid}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to update Pokemon details");
+			}
+
+			onResults({ pid, status: "taken" });
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (
@@ -40,8 +77,10 @@ export default function AdoptionCard({
 					<Button
 						type="button"
 						className="flex ring-white ring-1 w-32 rounded-12 justify-self-center mt-4"
+						disabled={status === "taken"}
+						onClick={() => adoptPokemon({ pid })}
 					>
-						Adopt Me
+						{status === "available" ? "Adopt Me" : "Adopted"}
 					</Button>
 					<Button
 						type="button"

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@chakra-ui/react";
+import { ApiAdoptablePokemon } from "../types";
 import AdoptionCard from "../components/AdoptionCard";
 import AdoptionForm from "@/components/AdoptionForm";
 import AlertComponent from "@/components/ui/AlertComponent";
+import { POKEMON_TYPES } from "@/constants/types";
 
 const dummyPokemon = [
 	{
@@ -31,8 +33,28 @@ const Adopt = () => {
 	const closeModal = () => setModalOpen(false);
 
 	// API CALL
-	// // /api/adoptable-pokemon
-	const [adoptablePokemon, setAdoptablePokemon] = useState(dummyPokemon);
+	// /api/adoptable-pokemon
+	const [adoptablePokemon, setAdoptablePokemon] = useState(
+		[] as ApiAdoptablePokemon[]
+	);
+
+	const getAdoptablePokemons = () => {
+		fetch("/api/adoptable-pokemon")
+			.then((res) => res.json())
+			.then((res) => res.map((pok: {date_added: string}) => ({
+				...pok,
+				date_added: Date.parse(pok.date_added)
+			})))
+			.then((data) => {
+				setAdoptablePokemon(data);
+			})
+			.catch((err) => console.error(err));
+	};
+
+	useEffect(() => {
+		getAdoptablePokemons();
+	}, []);
+
 	const validatePokemonName = () => {
 		// api call to validate pokemon name exists in master table?
 		// /api/validate-pokemon?name=${name}
@@ -40,11 +62,32 @@ const Adopt = () => {
 	// ADD POKEMON TO DATABASE
 	async function handleSubmit(data: {
 		nickname: string;
-		pokemonName: string;
+		name: string;
 		description: string;
 	}) {
 		// api call to put up for adoption
-		// /api/update-pokemon?nickname=${nickname}&name=${pokemonName}&description=${description}
+		try {
+			const response = await fetch("/api/add-pokemon", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to add new Pokemon");
+			}
+
+			const result = await response.json();
+			console.log("Success:", result);
+
+			getAdoptablePokemons();
+			// Better alternative:
+			// setAdoptablePokemon((prev) => [...prev, result.newPokemon]);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	return (
@@ -73,10 +116,21 @@ const Adopt = () => {
 					{adoptablePokemon.map((pokemon) => (
 						<AdoptionCard
 							key={pokemon.pid}
+							pid={pokemon.pid}
 							nickname={pokemon.nickname}
 							name={pokemon.name}
 							description={pokemon.description}
-							onResults={setAdoptablePokemon}
+							status={pokemon.status}
+							onResults={(data: {pid: number}) => {
+								setAdoptablePokemon(
+									(prev) =>
+										prev.map((pok: { pid: number }) =>
+											pok.pid === data.pid
+												? { ...pok, ...data }
+												: pok
+										) as ApiAdoptablePokemon[]
+								);
+							}}
 						/>
 					))}
 				</div>
