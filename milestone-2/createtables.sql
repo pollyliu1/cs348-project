@@ -44,7 +44,7 @@ CREATE TABLE Pokemon (
 );
 
 CREATE TABLE AdoptablePokemon (
-    pid INT NOT NULL PRIMARY KEY CHECK(pid >= 0),
+    pid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     pokedex_number INT NOT NULL REFERENCES Pokemon(pokedex_number),
     nickname VARCHAR(30) NOT NULL CHECK(LENGTH(nickname) > 0),
     date_added DATE NOT NULL,
