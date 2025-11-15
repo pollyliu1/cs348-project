@@ -1,6 +1,6 @@
 # CS348 Project – Milestone 2
 
-The following commands assume your current directory is `cs348-project/milestone-2`
+The following commands assume your current directory is `cs348-project/milestone-2`. Note that the DB setup and query files for production are within this directory, and the counterpart sample files are in the `sample-dataset` subdirectory.
 
 # Run Application
 
@@ -32,7 +32,7 @@ SELECT * FROM Pokemon LIMIT 5;
 
 ## Implemented Features
 
-### 1. Recent Adoptions (R7)
+### 1. Recent Adoptions (R6)
 
 **Frontend Files:** `Wiki.tsx`, `SearchBar.tsx`  
 **Backend Endpoint:** `GET /api/search-pokemon`
