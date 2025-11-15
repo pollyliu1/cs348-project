@@ -16,6 +16,7 @@ export default function Wiki({ pokemon: initialData }: Props) {
   //   { name: "Mindy", type1: "Fire", type2: "Water", pokedex_number: 99 },
   //   { name: "Andy", type1: "Fire", type2: "Water", pokedex_number: 1 },
   //   { name: "Musab", type1: "Fire", type2: "Water", pokedex_number: 2 },
+  //   { name: "Stanley", type1: "Fire", type2: "Water", pokedex_number: 999 },
   // ]);
   const [typesSelected, setTypesSelected] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>("Unsorted");
@@ -79,26 +80,28 @@ export default function Wiki({ pokemon: initialData }: Props) {
                 onTypesSelect={setTypesSelected}
               />
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 flex-1">
-              {pokemon.map((p, idx) => {
-                const type = renderType(p as any);
-                const key = `${p.pokedex_number ?? p.name}-${idx}`;
-                return (
-                  <article
-                    key={key}
-                    className="rounded-2xl border p-4 shadow-sm"
-                  >
-                    <header className="mb-2 flex items-start justify-between">
-                      <h2 className="text-lg font-semibold">{p.name}</h2>
-                    </header>
-                    <p className="text-sm ">Type: {type}</p>
-                    {/* {p.nickname && (
+            <div className="w-full flex flex-col">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 flex-1 [grid-auto-rows:150px]">
+                {pokemon.map((p, idx) => {
+                  const type = renderType(p as any);
+                  const key = `${p.pokedex_number ?? p.name}-${idx}`;
+                  return (
+                    <article
+                      key={key}
+                      className="flex flex-col justify-center rounded-2xl border p-8 pt-6 shadow-sm"
+                    >
+                      <header className="mb-2 flex items-start justify-between">
+                        <h2 className="text-lg font-semibold">{p.name}</h2>
+                      </header>
+                      <p className="text-sm ">Type: {type}</p>
+                      {/* {p.nickname && (
                     <p className="text-sm">Nickname: “{p.nickname}”</p>
                   )} */}
-                  </article>
-                );
-              })}
-              {pokemon.length === 0 && <p className="mt-4 ">No matches.</p>}
+                    </article>
+                  );
+                })}
+                {pokemon.length === 0 && <p className="mt-4 ">No matches.</p>}
+              </div>
             </div>
           </div>
         </>
