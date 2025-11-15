@@ -164,13 +164,13 @@ const Adopt = () => {
               nickname={pokemon.nickname}
               name={pokemon.name}
               description={pokemon.description}
-              status={pokemon.status}
+			  			status={pokemon.status}
               onResults={(data: { pid: number }) => {
                 setAdoptablePokemon(
                   (prev) =>
-                    prev.map((pok: { pid: number }) =>
+                    (console.log(prev, data), prev.map((pok: { pid: number }) =>
                       pok.pid === data.pid ? { ...pok, ...data } : pok
-                    ) as ApiAdoptablePokemon[]
+                    ) as ApiAdoptablePokemon[])
                 );
               }}
             />

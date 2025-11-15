@@ -33,7 +33,6 @@ export type ApiPokemon = PokemonMinimum & {
 
 export type ApiAdoptablePokemon = {
 	pid: number;
-	pokedex_number: number;
 	nickname: string;
 	name: string;
 	description: string;

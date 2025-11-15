@@ -41,7 +41,7 @@ export default function AdoptionCard({
 				throw new Error("Failed to update Pokemon details");
 			}
 
-			onResults({pid, nickname, name, description});
+			onResults({pid, nickname: data.nickname, name: data.name, description: data.description });
 		} catch (err) {
 			console.error(err);
 		}
@@ -98,7 +98,7 @@ export default function AdoptionCard({
 					handleSubmit={updatePokemon}
 					onClose={() => setModalOpen(false)}
 					isUpdate
-					existingData={{ nickname, pokemonName: name, description }}
+					existingData={{ nickname, name, description }}
 				/>
 			</Modal>
 		</>

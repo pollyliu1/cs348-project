@@ -60,7 +60,11 @@ def validate_pokemon():
 
 @app.route("/api/adoptable-pokemon")
 def adoptable_pokemon():
-	return jsonify(run_query("SELECT * FROM AdoptablePokemon;"))
+	return jsonify(
+		run_query("SELECT a.pid as pid, a.nickname as nickname, p.name as name, a.description," +
+				  "a.status as status, a.date_added as date_added FROM AdoptablePokemon AS a " +
+				  "JOIN Pokemon AS p ON a.pokedex_number = p.pokedex_number;")
+	)
 
 @app.route("/api/adopt-pokemon/<int:pid>", methods=["PUT"])
 def adopt_pokemon(pid):
@@ -73,6 +77,8 @@ def update_pokemon(pid):
 	nickname = data.get("nickname", "")
 	name = data.get("name", "")
 	description = data.get("description", "")
+	print(data)
+	print(pid, nickname, name, description)
 	try:
 		run_query(
 			"UPDATE AdoptablePokemon SET nickname = %s, pokedex_number = " +
@@ -80,7 +86,8 @@ def update_pokemon(pid):
 			(nickname, name, description, pid)
 		)
 		return jsonify({"success": True}), 200
-	except:
+	except Exception as e:
+		print("error is: ", e)
 		return jsonify({"error": "Invalid Pokemon name"}), 400
 
 @app.route("/api/add-pokemon", methods=["POST"])

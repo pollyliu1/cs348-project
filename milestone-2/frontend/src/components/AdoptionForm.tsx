@@ -11,7 +11,7 @@ type AdoptionFormProps = {
   onClose?: () => void;
   existingData?: {
     nickname: string;
-    pokemonName: string;
+    name: string;
     description: string;
   };
 };
@@ -22,14 +22,15 @@ const AdoptionForm = ({
   onClose,
   existingData,
 }: AdoptionFormProps) => {
+  console.log("the name I received is: ", existingData?.name, existingData);
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const nickname = formData.get("nickname") as string;
-    const pokemonName = formData.get("pokemonName") as string;
+    const name = formData.get("name") as string;
     const description = formData.get("description") as string;
 
-    handleSubmit({ nickname, name: pokemonName, description });
+    handleSubmit({ nickname, name, description });
     onClose?.();
   };
 
@@ -43,6 +44,7 @@ const AdoptionForm = ({
           Nickname <Field.RequiredIndicator />
         </Field.Label>
         <Input
+          name="nickname"
           placeholder="Enter nickname"
           border={"2px solid white"}
           paddingInline={"12px"}
@@ -56,11 +58,12 @@ const AdoptionForm = ({
           Pokémon Name <Field.RequiredIndicator />
         </Field.Label>
         <Input
+          name="name"
           placeholder="Enter Pokémon name"
           border={"2px solid white"}
           paddingInline={"12px"}
           marginBlockEnd={"16px"}
-          defaultValue={existingData?.pokemonName}
+          defaultValue={existingData?.name}
         />
       </Field.Root>
 
@@ -69,6 +72,7 @@ const AdoptionForm = ({
           Description <Field.RequiredIndicator />
         </Field.Label>
         <Textarea
+          name="description"
           resize="none"
           placeholder="Enter description"
           border={"2px solid white"}
