@@ -1,13 +1,17 @@
 import React, { ReactElement, useState } from "react";
 import type { ApiPokemon } from "../types";
 import { twMerge } from "tailwind-merge";
+import { POKEMON_TYPES } from "@/constants/types";
+
 type Props = {
   onResults?: (rows: ApiPokemon[]) => void;
   onStart?: () => void;
   onError?: (msg: string) => void;
+  typesSelected: string[];
+  sortBy: string;
 };
 
-export default function SearchBar({ onResults, onStart, onError }: Props) {
+export default function SearchBar({ onResults, onStart, onError, typesSelected, sortBy }: Props) {
   const [q, setQ] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -20,11 +24,18 @@ export default function SearchBar({ onResults, onStart, onError }: Props) {
     try {
       onStart?.();
       setLoading(true);
-      const r = await fetch(
-        `/api/search-pokemon?name=${encodeURIComponent(q)}`
+      const url = new URL("/api/search-pokemon", window.location.origin);
+      url.searchParams.set("name", q);
+      (typesSelected.length === 0 ? POKEMON_TYPES : typesSelected)
+        .forEach((type) => url.searchParams.append("type", type.toLowerCase()));
+      url.searchParams.set("order", 
+        sortBy === "Unsorted" ? "unsorted" :
+        sortBy === "Happiness Ascending" ? "asc" : "desc"
       );
+      const r = await fetch(url.toString());
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const data = (await r.json()) as ApiPokemon[];
+      console.log(data);
       onResults?.(data);
     } catch {
       onError?.("Search failed");

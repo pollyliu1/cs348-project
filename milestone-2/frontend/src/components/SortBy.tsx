@@ -1,5 +1,6 @@
 import { NativeSelect } from "@chakra-ui/react";
 import { SortOrders } from "@/constants/sorting";
+
 type Props = {
   sortBy: string;
   onSortChange: (sortBy: string) => void;

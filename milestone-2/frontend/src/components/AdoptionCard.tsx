@@ -29,7 +29,7 @@ export default function AdoptionCard({
 	) => {
 		// api call to update pokemon details
 		try {
-			const response = await fetch(`/api/update-pokemon/${pid}`, {
+			const response = await fetch(`/api/update-pokemon/${encodeURIComponent(pid)}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",

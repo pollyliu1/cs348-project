@@ -56,6 +56,8 @@ export default function Wiki({ pokemon: initialData }: Props) {
           }}
           onResults={(rows: ApiPokemon[]) => setPokemon(rows as any)}
           onError={(msg) => setError(msg)}
+          typesSelected={typesSelected}
+          sortBy={sortBy}
         />
       </div>
 

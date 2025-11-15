@@ -50,7 +50,18 @@ def fonts(file):
 @app.route("/api/search-pokemon")
 def get_pokemon():
 	name = request.args.get("name", "")
-	return run_query("SELECT * FROM Pokemon WHERE name LIKE %s;", (name,))
+	types = request.args.getlist("type")
+	order = request.args.get("order", "")
+	typelist = f"({", ".join(map(lambda s: "%s", types))})"
+
+	query = f"SELECT * FROM Pokemon WHERE name LIKE %s AND (type1 in {typelist} OR type2 IN {typelist})"
+	if order == "asc":
+		query += " ORDER BY base_happiness ASC"
+	elif order == "desc":
+		query += " ORDER BY base_happiness DESC"
+	query += ";"
+
+	return run_query(query, (f"%{name}%",) + tuple(types) + tuple(types))
 
 @app.route("/api/validate-pokemon")
 def validate_pokemon():
