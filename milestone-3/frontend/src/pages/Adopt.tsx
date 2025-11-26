@@ -1,87 +1,47 @@
 import { useEffect, useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@chakra-ui/react";
-import { ApiAdoptablePokemon } from "../types";
+import {
+  ApiAdoptablePokemon,
+  ApiMostAdoptedPokemon,
+  ApiRecentlyAdoptedPokemon,
+} from "../types";
 import AdoptionCard from "../components/AdoptionCard";
 import AdoptionForm from "@/components/AdoptionForm";
+import { NumberInput } from "@chakra-ui/react";
 import AlertComponent from "@/components/ui/AlertComponent";
 import { POKEMON_TYPES } from "@/constants/types";
+import { Tabs } from "@chakra-ui/react";
+import {
+  mostAdoptedTest,
+  recentlyAdoptedTest,
+  samplePokemons,
+} from "@/constants/dummy";
+import AdoptableSearch from "@/components/AdoptableSearch";
 
-const dummyPokemon = [
-  {
-    pid: 1,
-    pokedex_number: 2,
-    nickname: "Poke 1",
-    name: "Bulbasaur",
-    description: "This is a description for Poke 1.",
-    status: true,
-    date_added: Date.now(),
-  },
-  {
-    pid: 2,
-    pokedex_number: 3,
-    name: "Charmander",
-    nickname: "Poke 2",
-    description: "This is a description for Poke 2.",
-    status: true,
-    date_added: Date.now(),
-  },
-  {
-    pid: 3,
-    pokedex_number: 4,
-    name: "Charmander",
-    nickname: "Poke 2",
-    description: "This is a description for Poke 2.",
-    status: true,
-    date_added: Date.now(),
-  },
-  {
-    pid: 4,
-    pokedex_number: 10,
-    name: "Charmander",
-    nickname: "Poke 2",
-    description: "This is a description for Poke 2.",
-    status: true,
-    date_added: Date.now(),
-  },
-  {
-    pid: 4,
-    pokedex_number: 10,
-    name: "Charmander",
-    nickname: "Poke 2",
-    description: "This is a description for Poke 2.",
-    status: true,
-    date_added: Date.now(),
-  },
-  {
-    pid: 4,
-    pokedex_number: 10,
-    name: "Charmander",
-    nickname: "Poke 2",
-    description: "This is a description for Poke 2.",
-    status: true,
-    date_added: Date.now(),
-  },
-  {
-    pid: 4,
-    pokedex_number: 10,
-    name: "Charmander",
-    nickname: "Poke 2",
-    description: "This is a description for Poke 2.",
-    status: true,
-    date_added: Date.now(),
-  },
-];
 const Adopt = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
+  const [isAdmin, setIsAdmin] = useState(true);
 
-  // API CALL
+  // API CALLS
   // /api/adoptable-pokemon
   const [adoptablePokemon, setAdoptablePokemon] = useState(
-    [] as ApiAdoptablePokemon[]
+    samplePokemons as ApiAdoptablePokemon[]
   );
+  // recentlyAdoptedTest to test FE
+  const [recentlyAdoptedPokemon, setRecentlyAdoptedPokemon] = useState(
+    recentlyAdoptedTest as ApiRecentlyAdoptedPokemon[]
+  );
+  // mostAdoptedTest to test FE
+  const [mostAdoptedPokemon, setMostAdoptedPokemon] = useState(
+    mostAdoptedTest as ApiMostAdoptedPokemon[]
+  );
+  const [limit, setLimit] = useState(5);
+
+  // if user changes the limit, refresh the most adopted pokemon list
+  const refresh = () => {};
 
   const getAdoptablePokemons = () => {
     fetch("/api/adoptable-pokemon")
@@ -138,47 +98,182 @@ const Adopt = () => {
   }
 
   return (
-    <>
+    <Tabs.Root defaultValue="Adoptable Pokémon" variant="line">
       <div className="flex flex-col justify-center items-center h-screen w-screen overflow-scroll">
-        <h1 className="text-5xl text-center font-semibold mt-8">
-          Adoption Center
-        </h1>
-        <p className="text-center text-gray-50 text-xl mb-4">
-          Adopt a Pokémon!
-        </p>
-        <Button
-          type="button"
-          className="flex ring-white ring-1 px-8 py-6 rounded-12 justify-self-center mt-4"
-          onClick={openModal}
-        >
-          Add New Pokémon
-        </Button>
+        <div className="mt-20 flex justify-end pb-10 items-center flex-col">
+          <h1 className="text-5xl text-center font-semibold mt-8">
+            Adoption Center
+          </h1>
+          <p className="text-center text-gray-50 text-xl mb-4">
+            Adopt a Pokémon!
+          </p>
+          <Tabs.List className="flex gap-12">
+            <Tabs.Trigger value="Adoptable Pokémon" disabled={!isAdmin}>
+              Adoptable Pokémon
+            </Tabs.Trigger>
+            <Tabs.Trigger value="Recently Adopted">
+              Recently Adopted
+            </Tabs.Trigger>
+            <Tabs.Trigger value="Most Adopted">Most Adopted</Tabs.Trigger>
+          </Tabs.List>
+        </div>
         <Modal isOpen={modalOpen} onClose={closeModal}>
           <AdoptionForm handleSubmit={handleSubmit} onClose={closeModal} />
         </Modal>
-        <div className="w-full overflow-scroll grid grid-cols-1 sm:grid-cols-2 gap-4 m-8 p-10 max-h-[60%]">
-          {adoptablePokemon.map((pokemon) => (
-            <AdoptionCard
-              key={pokemon.pid}
-              pid={pokemon.pid}
-              nickname={pokemon.nickname}
-              name={pokemon.name}
-              description={pokemon.description}
-			  			status={pokemon.status}
-              onResults={(data: { pid: number }) => {
-                setAdoptablePokemon(
-                  (prev) =>
-                    (console.log(prev, data), prev.map((pok: { pid: number }) =>
-                      pok.pid === data.pid ? { ...pok, ...data } : pok
-                    ) as ApiAdoptablePokemon[])
-                );
-              }}
+        <div className="h-[60%] w-full p-8 pt-0 overflow-scroll">
+          <Tabs.Content value="Adoptable Pokémon">
+            <Button
+              type="button"
+              className="flex ring-white ring-1 px-8 py-6 rounded-12 justify-self-center mb-12"
+              onClick={openModal}
+            >
+              Add New Pokémon
+            </Button>
+            <AdoptableSearch />
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 h-full p-4 pt-0">
+              {adoptablePokemon.map((pokemon) => (
+                <AdoptionCard
+                  key={pokemon.pid}
+                  pid={pokemon.pid}
+                  nickname={pokemon.nickname}
+                  name={pokemon.name}
+                  description={pokemon.description}
+                  status={pokemon.status}
+                  onResults={(data: { pid: number }) => {
+                    setAdoptablePokemon(
+                      (prev) => (
+                        console.log(prev, data),
+                        prev.map((pok: { pid: number }) =>
+                          pok.pid === data.pid ? { ...pok, ...data } : pok
+                        ) as ApiAdoptablePokemon[]
+                      )
+                    );
+                  }}
+                />
+              ))}
+            </div>
+          </Tabs.Content>
+          <Tabs.Content value="Recently Adopted">
+            <RecentlyAdoptedTable
+              recentlyAdoptedPokemon={recentlyAdoptedPokemon}
             />
-          ))}
+          </Tabs.Content>
+          <Tabs.Content value="Most Adopted">
+            <MostAdoptedPokemone
+              mostAdoptedPokemon={mostAdoptedPokemon}
+              limit={limit}
+              setLimit={setLimit}
+              refresh={refresh}
+            />
+          </Tabs.Content>
         </div>
+      </div>
+    </Tabs.Root>
+  );
+};
+
+function RecentlyAdoptedTable({
+  recentlyAdoptedPokemon,
+}: {
+  recentlyAdoptedPokemon: any[];
+}) {
+  return (
+    <div className="w-full flex justify-center items-center overflow-scroll">
+      <table className="min-w-[800px] table-fixed ml-12 border-spacing-y-2 border-separate">
+        <thead>
+          <tr className="text-left font-semibold">
+            <th className="w-1/4">Pokémon Name</th>
+            <th className="w-1/4">Nickname</th>
+            <th className="w-1/4">Adopter</th>
+            <th className="w-1/4">Adoption Date</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {recentlyAdoptedPokemon.map((p: any, i: number) => (
+            <tr key={i}>
+              <td>{p.name}</td>
+              <td>{p.nickname}</td>
+              <td>{p.adopter}</td>
+              <td>{p.date}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function MostAdoptedPokemone({
+  mostAdoptedPokemon,
+  limit = 5,
+  setLimit,
+  refresh,
+}: {
+  mostAdoptedPokemon: any[];
+  limit?: number;
+  setLimit?: (limit: number) => void;
+  refresh?: () => void;
+}) {
+  const getLimitNumber = () => {
+    return limit.toString();
+  };
+  const setLimitNumber = (value: string) => {
+    const num = parseInt(value);
+    if (!isNaN(num)) {
+      setLimit && setLimit(num);
+    }
+  };
+  return (
+    <>
+      <div className="w-full flex flex-col justify-center items-center mb-10">
+        <p className="mb-2 text-sm">Set a limit to show:</p>
+        <div className="flex gap-4">
+          <NumberInput.Root
+            defaultValue="10"
+            width="200px"
+            value={getLimitNumber()}
+            onValueChange={(e) => setLimitNumber(e.value)}
+          >
+            <NumberInput.Control className="mr-2 scale-75" />
+            <NumberInput.Input className="rounded-12 p-4 ring-1 ring-white" />
+          </NumberInput.Root>
+          <button
+            onClick={() => refresh && refresh()}
+            type="submit"
+            className="rounded-xl px-8 rounded-10 py-2 font-sm border-white border-[1px] fill-transparent disabled:opacity-60"
+          >
+            Apply
+          </button>
+        </div>
+      </div>
+      <div className="w-full flex justify-center items-center overflow-scroll">
+        <table className="min-w-[850px] table-fixed ml-12 border-spacing-y-2 border-separate">
+          <thead>
+            <tr className="text-left font-semibold">
+              <th className="w-1/5">Rank</th>
+              <th className="w-1/5">Pokedex Number</th>
+              <th className="w-1/5">Name</th>
+              <th className="w-1/5">Total Adoptions</th>
+              <th className="w-1/5">Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {mostAdoptedPokemon.map((p: any, i: number) => (
+              <tr key={i}>
+                <td>{i + 1}</td>
+                <td>{p.pokedexNumber}</td>
+                <td>{p.name}</td>
+                <td>{p.totalAdoptions}</td>
+                <td>{p.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   );
-};
+}
 
 export default Adopt;
