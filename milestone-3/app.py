@@ -119,5 +119,62 @@ def add_pokemon():
 		return jsonify({"error": "Invalid Pokemon name"}), 400
 	return ""
 
+@app.route("/api/create-account", methods=["POST"])
+def create_account():
+	data = request.json
+	name = data.get("name", "")
+	username = data.get("username", "")
+	password = data.get("password", "")
+	try:
+		run_query(
+			"INSERT INTO User (name, username, password) " +
+			"VALUES (%s, %s, MD5(%s));",
+			(name, username, password)
+		)
+
+		run_query(
+			"INSERT INTO Adopter (uid, pref_abilities, pref_types) " +
+			"VALUES ((SELECT uid FROM User WHERE username = %s), '[]', '[]');",
+			(username,)
+		)
+		return jsonify({
+			"pref_types": "[]",
+			"pref_abilities": "[]",
+			"uid": run_query("SELECT uid FROM User WHERE username = %s;", (username,))[0]["uid"],
+			"name": name
+		})
+	except:
+		return jsonify({"error": "Invalid username or password"}), 400
+	return ""
+
+@app.route("/api/login", methods=["POST"])
+def login():
+	data = request.json
+	username = data.get("username", "")
+	password = data.get("password", "")
+	try:
+		res = run_query(
+			"SELECT * FROM User WHERE username = %s AND password = MD5(%s);",
+			(username, password)
+		)
+
+		if len(res) == 0:
+			return jsonify({"error": "Invalid username or password"}), 400
+
+		uid = res[0]["uid"]
+		res2 = run_query("SELECT * FROM Adopter WHERE uid = %s", (uid,))
+		types = None if len(res2) == 0 else res2[0]["pref_types"]
+		abilities = None if len(res2) == 0 else res2[0]["pref_abilities"]
+
+		return jsonify({
+			"pref_types": types,
+			"pref_abilities": abilities,
+			"uid": uid,
+			"name": res[0]["name"]
+		})
+	except:
+		return jsonify({"error": "Invalid username or password"}), 400
+	return ""
+
 if __name__ == "__main__":
 	app.run(debug=True, port=5000)

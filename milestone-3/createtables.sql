@@ -9,9 +9,9 @@ DROP TABLE IF EXISTS Adopter;
 DROP TABLE IF EXISTS User;
 
 CREATE TABLE User (
-    uid INT NOT NULL PRIMARY KEY,
-    username VARCHAR(30) NOT NULL CHECK(LENGTH(username) > 0),
-    password VARCHAR(30) NOT NULL CHECK(LENGTH(password) >= 8),
+    uid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(30) NOT NULL CHECK(LENGTH(username) > 0) UNIQUE,
+    password CHAR(32) NOT NULL,
     name VARCHAR(30) NOT NULL CHECK(LENGTH(name) > 0)
 );
 

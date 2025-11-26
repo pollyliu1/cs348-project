@@ -9,7 +9,7 @@ interface AuthFormProps {
 
 export default function AuthForm({ isLogin }: AuthFormProps) {
 	const [name, setName] = useState('');
-	const [email, setEmail] = useState('');
+	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -27,13 +27,35 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 	};
 
 	const handleSubmit = async (e: FormEvent) => {
+		console.log("submitting?");
 		e.preventDefault();
 		// api call to authenticate/create user
-		// if isLogin then authenticate use otherwise call endpoint to create new user with name, email and password
+		// if isLogin then authenticate use otherwise call endpoint to create new user with name, username and password
 		// call auth context login function with user id
 		// also set any error strings on error
-		login('1');
-		navigate('/adopt'); // navigate to adopt if signin/signup successful
+		const url = isLogin ? `/api/login` : `/api/create-account`;
+		try {
+			const response = await fetch(url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ name, username: username, password }),
+			});
+
+			if (!response.ok) {
+				console.log("error is: ", await response.json());
+				// setError(await response.text());
+			}
+
+			const res = await response.json();
+			console.log("uid is ", res["uid"]);
+
+			login(res["uid"]);
+			navigate("/adopt"); // navigate to adopt if signin/signup successful
+		} catch (err: any) {
+			setError(err.toString());
+		}
 	};
 
 	return (
@@ -47,7 +69,7 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 				<form className='space-y-4' onSubmit={handleSubmit}>
 					{!isLogin && (
 						<div className='flex flex-col gap-1'>
-							<label htmlFor='email' className='text-sm text-black font-medium'>
+							<label htmlFor='name' className='text-sm text-black font-medium'>
 								Name
 							</label>
 							<input
@@ -65,18 +87,18 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 						</div>
 					)}
 					<div className='flex flex-col gap-1'>
-						<label htmlFor='email' className='text-sm text-black font-medium'>
-							Email address
+						<label htmlFor='username' className='text-sm text-black font-medium'>
+							Username
 						</label>
 						<input
-							id='email'
-							name='email'
-							type='email'
-							autoComplete='email'
+							id='username'
+							name='username'
+							type='username'
+							autoComplete='username'
 							required
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							placeholder='Email address'
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+							placeholder='Username'
 							className='appearance-none rounded-1.5 w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
 							disabled={isLoading}
 						/>
