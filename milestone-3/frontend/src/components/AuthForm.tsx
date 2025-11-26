@@ -95,7 +95,7 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 								value={name}
 								onChange={(e) => setName(e.target.value)}
 								placeholder='Name'
-								className='appearance-none rounded-1.5 w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+								className='bg-white appearance-none rounded-1.5 w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
 								disabled={isLoading}
 							/>
 						</div>
@@ -116,7 +116,7 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 							value={username}
 							onChange={(e) => setUsername(e.target.value)}
 							placeholder='Username'
-							className='appearance-none rounded-1.5 w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+							className='bg-white appearance-none rounded-1.5 w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
 							disabled={isLoading}
 						/>
 					</div>
@@ -136,7 +136,7 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							placeholder='Password'
-							className='appearance-none rounded-1.5 w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+							className='bg-white appearance-none rounded-1.5 w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
 							disabled={isLoading}
 						/>
 					</div>

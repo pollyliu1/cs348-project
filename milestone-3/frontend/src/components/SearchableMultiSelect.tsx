@@ -71,7 +71,7 @@ export default function SearchableMultiSelect({
 						setIsOpen(true);
 					}}
 					onFocus={() => setIsOpen(true)}
-					className='appearance-none rounded-1.5 w-full pl-8 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:placeholder:text-gray-300 disabled:border-gray-200'
+					className='bg-white appearance-none rounded-1.5 w-full pl-8 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:placeholder:text-gray-300 disabled:border-gray-200'
 					disabled={selectedItems.length >= 3}
 				/>
 			</div>
