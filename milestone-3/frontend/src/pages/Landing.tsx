@@ -4,14 +4,14 @@ import { useEffect } from 'react';
 
 const Landing = () => {
 	const navigate = useNavigate();
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated, isSettingUp } = useAuth();
 
 	const handleSignupRedirect = () => {
 		navigate('/signup');
 	};
 
 	useEffect(() => {
-		if (isAuthenticated) {
+		if (isAuthenticated && !isSettingUp) {
 			navigate('/adopt', { replace: true });
 		}
 	}, [isAuthenticated, navigate]);

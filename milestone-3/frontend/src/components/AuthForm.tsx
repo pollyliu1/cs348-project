@@ -1,10 +1,11 @@
 import { useState, FormEvent, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FiLoader } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
 
 interface AuthFormProps {
 	isLogin: boolean;
+	onSignupSuccess?: () => void;
 }
 
 export default function AuthForm({ isLogin }: AuthFormProps) {
@@ -14,12 +15,14 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const { login, isAuthenticated } = useAuth();
+	const { login, isAuthenticated, isSettingUp, setIsSettingUp } = useAuth();
 	const navigate = useNavigate();
 
-	if (isAuthenticated) {
-		return <Navigate to='/adopt' replace />;
-	}
+	useEffect(() => {
+		if (isAuthenticated && !isSettingUp) {
+			navigate('/adopt', { replace: true });
+		}
+	}, [isAuthenticated, isSettingUp, navigate]);
 
 	const handleToggle = () => {
 		const targetPath = isLogin ? '/signup' : '/login';
@@ -27,34 +30,42 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 	};
 
 	const handleSubmit = async (e: FormEvent) => {
-		console.log("submitting?");
 		e.preventDefault();
 		// api call to authenticate/create user
 		// if isLogin then authenticate use otherwise call endpoint to create new user with name, username and password
 		// call auth context login function with user id
 		// also set any error strings on error
 		const url = isLogin ? `/api/login` : `/api/create-account`;
+		setIsLoading(true);
 		try {
 			const response = await fetch(url, {
-				method: "POST",
+				method: 'POST',
 				headers: {
-					"Content-Type": "application/json",
+					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ name, username: username, password }),
 			});
 
 			if (!response.ok) {
-				console.log("error is: ", await response.json());
+				console.log('error is: ', await response.json());
 				// setError(await response.text());
 			}
 
 			const res = await response.json();
-			console.log("uid is ", res["uid"]);
+			console.log('uid is ', res['uid']);
 
-			login(res["uid"]);
-			navigate("/adopt"); // navigate to adopt if signin/signup successful
+			login(res['uid']);
+
+			// navigate to adopt if signin successful
+			if (isLogin) {
+				navigate('/adopt');
+			} else {
+				setIsSettingUp(true);
+			}
 		} catch (err: any) {
 			setError(err.toString());
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -69,7 +80,10 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 				<form className='space-y-4' onSubmit={handleSubmit}>
 					{!isLogin && (
 						<div className='flex flex-col gap-1'>
-							<label htmlFor='name' className='text-sm text-black font-medium'>
+							<label
+								htmlFor='name'
+								className='text-sm text-gray-900 font-medium'
+							>
 								Name
 							</label>
 							<input
@@ -87,7 +101,10 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 						</div>
 					)}
 					<div className='flex flex-col gap-1'>
-						<label htmlFor='username' className='text-sm text-black font-medium'>
+						<label
+							htmlFor='username'
+							className='text-sm text-gray-900 font-medium'
+						>
 							Username
 						</label>
 						<input
@@ -106,7 +123,7 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 					<div className='flex flex-col gap-1'>
 						<label
 							htmlFor='password'
-							className='text-sm text-black font-medium'
+							className='text-sm text-gray-900 font-medium'
 						>
 							Password
 						</label>
