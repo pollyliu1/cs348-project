@@ -11,14 +11,15 @@
 --   +10 points for match in abilities
 
 SELECT 
-    Pokemon.pokedex_number
-    , Pokemon.name
-    , AdoptablePokemon.nickname
+    AdoptablePokemon.pid AS pid
+    , AdoptablePokemon.nickname AS nickname
+    , Pokemon.name AS name
+    , AdoptablePokemon.description AS description
+    , AdoptablePokemon.status AS status
+    , AdoptablePokemon.date_added AS date_added
     , Pokemon.type1
     , Pokemon.type2
-    , AdoptablePokemon.description
     , Pokemon.abilities
-    , AdoptablePokemon.status
     , (
         -- Exact match in Pokemon name
         CASE WHEN LOWER(Pokemon.name) = LOWER('water')
@@ -43,10 +44,10 @@ SELECT
             THEN 10 ELSE 0 END
     ) AS relevance_score
 
-FROM Pokemon
+FROM AdoptablePokemon
 
-LEFT OUTER JOIN AdoptablePokemon
-    ON Pokemon.pokedex_number = AdoptablePokemon.pokedex_number
+INNER JOIN Pokemon
+    ON AdoptablePokemon.pokedex_number = Pokemon.pokedex_number
 
 WHERE (
     LOWER(Pokemon.name) LIKE LOWER('%water%')

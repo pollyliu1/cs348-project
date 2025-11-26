@@ -8,8 +8,12 @@
 -- higher score = better compatibility
 
 SELECT
-    Pokemon.pokedex_number
-    , Pokemon.name
+    AdoptablePokemon.pid AS pid
+    , AdoptablePokemon.nickname AS nickname
+    , Pokemon.name AS name
+    , AdoptablePokemon.description AS description
+    , AdoptablePokemon.status AS status
+    , AdoptablePokemon.date_added AS date_added
     , Pokemon.type1
     , Pokemon.type2
     , Pokemon.abilities
@@ -33,10 +37,14 @@ SELECT
         ) THEN 15 ELSE 0 END
     ) AS compatibility_score
 
-FROM Pokemon
+FROM AdoptablePokemon
+
+INNER JOIN Pokemon
+    ON AdoptablePokemon.pokedex_number = Pokemon.pokedex_number
 
 CROSS JOIN Adopter
 
 WHERE Adopter.uid = 205
+    AND AdoptablePokemon.nickname LIKE '%horn%'
 
 ORDER BY compatibility_score DESC;
