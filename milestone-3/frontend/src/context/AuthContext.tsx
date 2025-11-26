@@ -3,19 +3,23 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 interface AuthContextType {
 	isAuthenticated: boolean;
 	isSettingUp: boolean;
+	isAdmin: boolean;
 	userId: string | null;
 	login: (id: string) => void;
 	logout: () => void;
 	setIsSettingUp: (v: boolean) => void;
+	setIsAdmin: (v: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
 	isAuthenticated: false,
 	isSettingUp: false,
+	isAdmin: false,
 	userId: null,
 	login: () => {},
 	logout: () => {},
 	setIsSettingUp: () => {},
+	setIsAdmin: () => {},
 });
 
 // Function to initialize state from Local Storage
@@ -24,6 +28,7 @@ const getInitialState = () => {
 	return {
 		isAuthenticated: !!storedUserId, // true if userId exists
 		isSettingUp: false,
+		isAdmin: false,
 		userId: storedUserId || null,
 	};
 };
@@ -49,6 +54,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			isAuthenticated: false,
 			isSettingUp: false,
 			userId: null,
+			isAdmin: false,
 		});
 		localStorage.removeItem('userId');
 	};
@@ -60,9 +66,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		}));
 	};
 
+	const setIsAdmin = (value: boolean) => {
+		setAuthState((prev) => ({
+			...prev,
+			isAdmin: value,
+		}));
+	};
+
 	const contextValue = {
 		...authState,
 		setIsSettingUp,
+		setIsAdmin,
 		login,
 		logout,
 	};
