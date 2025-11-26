@@ -1,6 +1,7 @@
-import { useState, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, FormEvent, useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { FiLoader } from 'react-icons/fi';
+import { useAuth } from '@/context/AuthContext';
 
 interface AuthFormProps {
 	isLogin: boolean;
@@ -12,7 +13,13 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 	const [password, setPassword] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+
+	const { login, isAuthenticated } = useAuth();
 	const navigate = useNavigate();
+
+	if (isAuthenticated) {
+		return <Navigate to='/adopt' replace />;
+	}
 
 	const handleToggle = () => {
 		const targetPath = isLogin ? '/signup' : '/login';
@@ -25,6 +32,8 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 		// if isLogin then authenticate use otherwise call endpoint to create new user with name, email and password
 		// call auth context login function with user id
 		// also set any error strings on error
+		login('1');
+		navigate('/adopt'); // navigate to adopt if signin/signup successful
 	};
 
 	return (
