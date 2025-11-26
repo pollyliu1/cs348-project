@@ -51,5 +51,4 @@ export type ApiMostAdoptedPokemon = {
   pokedexNumber: number;
   name: string;
   totalAdoptions: number;
-  status: "active" | "inactive";
 };

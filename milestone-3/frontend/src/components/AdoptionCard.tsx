@@ -2,6 +2,7 @@ import { Button } from "@chakra-ui/react";
 import { Modal } from "./ui/modal";
 import AdoptionForm from "./AdoptionForm";
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 type AdoptionCardProps = {
   pid: number,
 	nickname: string;
@@ -20,6 +21,7 @@ export default function AdoptionCard({
 	onResults,
 }: AdoptionCardProps) {
 	const [modalOpen, setModalOpen] = useState(false);
+	const {userId} = useAuth();
 	const updatePokemon = async (
 		data: {
 			nickname: string;
@@ -49,7 +51,7 @@ export default function AdoptionCard({
 
 	const adoptPokemon = async (data: { pid: number }) => {
 		try {
-			const response = await fetch(`/api/adopt-pokemon/${pid}`, {
+			const response = await fetch(`/api/adopt-pokemon/${pid}/${userId}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",

@@ -12,11 +12,6 @@ import { NumberInput } from "@chakra-ui/react";
 import AlertComponent from "@/components/ui/AlertComponent";
 import { POKEMON_TYPES } from "@/constants/types";
 import { Tabs } from "@chakra-ui/react";
-import {
-  mostAdoptedTest,
-  recentlyAdoptedTest,
-  samplePokemons,
-} from "@/constants/dummy";
 import AdoptableSearch from "@/components/AdoptableSearch";
 
 const Adopt = () => {
@@ -28,20 +23,22 @@ const Adopt = () => {
   // API CALLS
   // /api/adoptable-pokemon
   const [adoptablePokemon, setAdoptablePokemon] = useState(
-    samplePokemons as ApiAdoptablePokemon[]
+    [] as ApiAdoptablePokemon[]
   );
   // recentlyAdoptedTest to test FE
   const [recentlyAdoptedPokemon, setRecentlyAdoptedPokemon] = useState(
-    recentlyAdoptedTest as ApiRecentlyAdoptedPokemon[]
+    [] as ApiRecentlyAdoptedPokemon[]
   );
   // mostAdoptedTest to test FE
   const [mostAdoptedPokemon, setMostAdoptedPokemon] = useState(
-    mostAdoptedTest as ApiMostAdoptedPokemon[]
+    [] as ApiMostAdoptedPokemon[]
   );
   const [limit, setLimit] = useState(5);
 
   // if user changes the limit, refresh the most adopted pokemon list
-  const refresh = () => {};
+  const refresh = () => {
+    getMostAdoptedPokemons();
+  };
 
   const getAdoptablePokemons = () => {
     fetch("/api/adoptable-pokemon")
@@ -58,8 +55,40 @@ const Adopt = () => {
       .catch((err) => console.error(err));
   };
 
+  const getRecentlyAdoptedPokemons = () => {
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+
+    fetch("/api/recently-adopted")
+      .then((res) => res.json())
+      .then((res) =>
+        res.map((pok: { date: string }) => ({
+          ...pok,
+          date: formatter.format(Date.parse(pok.date))
+        }))
+      )
+      .then((data) => {
+        setRecentlyAdoptedPokemon(data);
+      })
+      .catch((err) => console.error(err));
+  }
+  
+  const getMostAdoptedPokemons = () => {
+    fetch(`/api/most-adopted?limit=${limit}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setMostAdoptedPokemon(data);
+      })
+      .catch((err) => console.error(err));
+  };
+
   useEffect(() => {
     getAdoptablePokemons();
+    getRecentlyAdoptedPokemons();
+    getMostAdoptedPokemons();
   }, []);
 
   const validatePokemonName = () => {
@@ -129,7 +158,7 @@ const Adopt = () => {
             >
               Add New Pokémon
             </Button>
-            <AdoptableSearch />
+            <AdoptableSearch onResults={(it) => setAdoptablePokemon(it)} />
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 h-full p-4 pt-0">
               {adoptablePokemon.map((pokemon) => (
                 <AdoptionCard
@@ -251,11 +280,10 @@ function MostAdoptedPokemone({
         <table className="min-w-[850px] table-fixed ml-12 border-spacing-y-2 border-separate">
           <thead>
             <tr className="text-left font-semibold">
-              <th className="w-1/5">Rank</th>
-              <th className="w-1/5">Pokedex Number</th>
-              <th className="w-1/5">Name</th>
-              <th className="w-1/5">Total Adoptions</th>
-              <th className="w-1/5">Status</th>
+              <th className="w-1/4">Rank</th>
+              <th className="w-1/4">Pokedex Number</th>
+              <th className="w-1/4">Name</th>
+              <th className="w-1/4">Total Adoptions</th>
             </tr>
           </thead>
 
@@ -266,7 +294,6 @@ function MostAdoptedPokemone({
                 <td>{p.pokedexNumber}</td>
                 <td>{p.name}</td>
                 <td>{p.totalAdoptions}</td>
-                <td>{p.status}</td>
               </tr>
             ))}
           </tbody>

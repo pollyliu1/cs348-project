@@ -101,25 +101,22 @@ export const recentlyAdoptedTest = [
 ];
 
 export const mostAdoptedTest = [
-  { pokedexNumber: 25, name: "Pikachu", totalAdoptions: 42, status: "active" },
-  { pokedexNumber: 1, name: "Bulbasaur", totalAdoptions: 37, status: "active" },
+  { pokedexNumber: 25, name: "Pikachu", totalAdoptions: 42 },
+  { pokedexNumber: 1, name: "Bulbasaur", totalAdoptions: 37 },
   {
     pokedexNumber: 4,
     name: "Charmander",
     totalAdoptions: 33,
-    status: "active",
   },
   {
     pokedexNumber: 7,
     name: "Squirtle",
     totalAdoptions: 31,
-    status: "inactive",
   },
-  { pokedexNumber: 133, name: "Eevee", totalAdoptions: 28, status: "active" },
+  { pokedexNumber: 133, name: "Eevee", totalAdoptions: 28 },
   {
     pokedexNumber: 39,
     name: "Jigglypuff",
     totalAdoptions: 21,
-    status: "active",
   },
 ];

@@ -53,7 +53,7 @@ CREATE TABLE AdoptablePokemon (
 );
 
 CREATE TABLE AdoptionLogs (
-    log_id INT NOT NULL PRIMARY KEY CHECK(log_id >= 0),
+    log_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     uid INT NOT NULL REFERENCES Adopter(uid),
     pid INT NOT NULL REFERENCES AdoptablePokemon(pid),
     log_date DATE NOT NULL,

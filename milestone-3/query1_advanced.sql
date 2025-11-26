@@ -14,10 +14,6 @@ SELECT
     , AdoptablePokemon.description AS description
     , AdoptablePokemon.status AS status
     , AdoptablePokemon.date_added AS date_added
-    , Pokemon.type1
-    , Pokemon.type2
-    , Pokemon.abilities
-    , Pokemon.base_happiness
     , (
         -- Check if type1 is in user's preferred types (+10 points)
         CASE WHEN JSON_CONTAINS(

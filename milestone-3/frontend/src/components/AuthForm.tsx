@@ -47,8 +47,7 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 			});
 
 			if (!response.ok) {
-				console.log('error is: ', await response.json());
-				// setError(await response.text());
+				setError(await response.text());
 			}
 
 			const res = await response.json();

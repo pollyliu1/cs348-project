@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import type { ApiAdoptablePokemon } from "../types";
 import { Switch } from "@chakra-ui/react";
+import { useAuth } from "@/context/AuthContext";
 
 type Props = {
   onResults?: (rows: ApiAdoptablePokemon[]) => void;
@@ -11,12 +12,29 @@ export default function AdoptableSearch({ onResults, onStart }: Props) {
   const [q, setQ] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [relevanceSelected, setRelevanceSelected] = useState<boolean>(false);
+  const { userId } = useAuth();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // replace/fill in
-    onStart?.();
-    onResults?.([]);
+    try {
+      const url = new URL("/api/search-adoptable-pokemon", window.location.origin);
+      url.searchParams.set("name", q);
+      url.searchParams.set("uid", userId || "");
+      url.searchParams.set("order", relevanceSelected ? "relevance" : "compatibility");
+			const response = await fetch(url);
+
+			if (!response.ok) {
+				console.log("error is: ", await response.text());
+			}
+
+      const x = await response.json();
+      console.log("results:", x)
+      onStart?.();
+      onResults?.(x);
+
+		} catch (err: any) {
+			console.log(err.toString());
+		}
   }
 
   return (

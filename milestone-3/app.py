@@ -72,13 +72,13 @@ def validate_pokemon():
 @app.route("/api/adoptable-pokemon")
 def adoptable_pokemon():
 	return jsonify(
-		run_query("SELECT a.pid as pid, a.nickname as nickname, p.name as name, a.description," +
-				  "a.status as status, a.date_added as date_added FROM AdoptablePokemon AS a " +
-				  "JOIN Pokemon AS p ON a.pokedex_number = p.pokedex_number;")
+		run_query("SELECT * FROM AdoptablePokemonView;")
 	)
 
-@app.route("/api/adopt-pokemon/<int:pid>", methods=["PUT"])
-def adopt_pokemon(pid):
+@app.route("/api/adopt-pokemon/<int:pid>/<int:uid>", methods=["PUT"])
+def adopt_pokemon(pid, uid):
+	run_query("INSERT INTO AdoptionLogs (uid, pid, log_date, action_type)" +
+			  "VALUES (%s, %s, CURDATE(), 'adopt');", (uid, pid))
 	run_query("UPDATE AdoptablePokemon SET status = 'taken' WHERE pid = %s;", (pid,))
 	return jsonify({"success": True}), 200
 
@@ -141,7 +141,8 @@ def create_account():
 			"pref_types": "[]",
 			"pref_abilities": "[]",
 			"uid": run_query("SELECT uid FROM User WHERE username = %s;", (username,))[0]["uid"],
-			"name": name
+			"name": name,
+			"role": "adopter"
 		})
 	except:
 		return jsonify({"error": "Invalid username or password"}), 400
@@ -170,11 +171,58 @@ def login():
 			"pref_types": types,
 			"pref_abilities": abilities,
 			"uid": uid,
-			"name": res[0]["name"]
+			"name": res[0]["name"],
+			"role": "admin" if len(res2) == 0 else "adopter"
 		})
 	except:
 		return jsonify({"error": "Invalid username or password"}), 400
 	return ""
+
+@app.route("/api/search-adoptable-pokemon")
+def search_adoptable_pokemon():
+	name = request.args.get("name", "").lower()
+	order = request.args.get("order", "")
+	uid = request.args.get("uid", "")
+
+	if order == "relevance":
+		with open("./query2_advanced.sql", "r") as f:
+			contents = f.read()
+			count = contents.count("water")
+			query = contents.replace("'%water%'", "%s").replace("'water'", "%s")
+		return run_query(query, (name, f"%{name}%", name) + (f"%{name}%",) * (count - 3))
+	else:
+		with open("./query1_advanced.sql", "r") as f:
+			query = f.read().replace("205", "%s").replace("'%horn%'", "%s")
+		return run_query(query, (uid, f"%{name}%"))
+	
+
+@app.route("/api/recently-adopted")
+def recently_adopted():
+	return run_query(
+		"""
+		SELECT Pokemon.name AS name, nickname, User.name as adopter, log_date as date
+		FROM AdoptionLogs
+		JOIN User ON User.uid = AdoptionLogs.uid
+		JOIN AdoptablePokemon ON AdoptablePokemon.pid = AdoptionLogs.pid
+		JOIN Pokemon ON Pokemon.pokedex_number = AdoptablePokemon.pokedex_number
+		WHERE action_type = 'adopt'
+		ORDER BY log_date DESC;
+	""");
+
+@app.route("/api/most-adopted")
+def most_adopted():
+	limit = int(request.args.get("limit", "50"))
+	return run_query(
+		"""
+		SELECT Pokemon.pokedex_number AS pokedexNumber, name, count(*) AS totalAdoptions
+		FROM Pokemon
+		JOIN AdoptablePokemon ON AdoptablePokemon.pokedex_number = Pokemon.pokedex_number
+		JOIN AdoptionLogs ON AdoptionLogs.pid = AdoptablePokemon.pid
+		WHERE action_type = 'adopt'
+		GROUP BY pokedexNumber
+		ORDER BY totalAdoptions DESC, name
+		LIMIT %s;
+	""", (limit,));
 
 if __name__ == "__main__":
 	app.run(debug=True, port=5000)

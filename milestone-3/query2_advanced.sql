@@ -17,9 +17,6 @@ SELECT
     , AdoptablePokemon.description AS description
     , AdoptablePokemon.status AS status
     , AdoptablePokemon.date_added AS date_added
-    , Pokemon.type1
-    , Pokemon.type2
-    , Pokemon.abilities
     , (
         -- Exact match in Pokemon name
         CASE WHEN LOWER(Pokemon.name) = LOWER('water')
@@ -58,6 +55,4 @@ WHERE (
     OR LOWER(Pokemon.abilities) LIKE LOWER('%water%')
 )
 
-ORDER BY relevance_score DESC
-
-LIMIT 50;
+ORDER BY relevance_score DESC;
