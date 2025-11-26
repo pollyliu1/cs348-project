@@ -1,7 +1,5 @@
-import React, { ReactElement, useState } from "react";
-import type { ApiAdoptablePokemon, ApiPokemon } from "../types";
-import { twMerge } from "tailwind-merge";
-import { POKEMON_TYPES } from "@/constants/types";
+import React, { useState } from "react";
+import type { ApiAdoptablePokemon } from "../types";
 import { Switch } from "@chakra-ui/react";
 
 type Props = {
