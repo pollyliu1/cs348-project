@@ -41,13 +41,13 @@ const NavBar = () => {
 						<>
 							<h2
 								onClick={() => nav('/login')}
-								className='p-1 text-md text-white hover:text-white/80 transition'
+								className='p-1 text-md text-white hover:text-indigo-400 transition'
 							>
 								Login
 							</h2>
 							<h2
 								onClick={() => nav('/signup')}
-								className='px-4 py-2 text-md border-white border rounded-2 text-white hover:text-white/80 hover:border-white/80 transition'
+								className='px-4 py-2 text-md border-white border rounded-2 text-white hover:text-indigo-400 hover:border-indigo-400 transition'
 							>
 								Sign Up
 							</h2>
