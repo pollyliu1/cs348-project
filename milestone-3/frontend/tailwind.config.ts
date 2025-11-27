@@ -30,6 +30,7 @@ const config: Config = {
     },
     fontFamily: {
       display: ["var(--font-helvetica)"],
+      pixel: ["var(--font-pixel)"],
     },
     lineHeight: {
       1: "4px",

@@ -31,9 +31,18 @@
 	src: url('/fonts/Bhamious.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'Pokemon Classic';
+  src: url('/fonts/Pokemon Classic.ttf') format('truetype');
+}
+
 :root {
 	--font-helvetica: 'Helvetica Now Display';
-	background: oklch(21% 0.034 264.665);
+	--font-pixel: "Pokemon Classic";
+	background-size: cover;
+  	background-position: center;
+  	background-repeat: no-repeat;
+	background-image: url("/src/assets/background.jpg");
 }
 
 html,
