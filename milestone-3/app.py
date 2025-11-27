@@ -68,7 +68,7 @@ def get_pokemon():
 	name = request.args.get("name", "")
 	types = request.args.getlist("type")
 	order = request.args.get("order", "")
-	typelist = f"({", ".join(map(lambda s: "%s", types))})"
+	typelist = f"({', '.join(map(lambda s: '%s', types))})"
 
 	query = f"SELECT * FROM Pokemon WHERE name LIKE %s AND (type1 in {typelist} OR type2 IN {typelist})"
 	if order == "asc":
