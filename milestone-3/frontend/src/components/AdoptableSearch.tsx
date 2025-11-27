@@ -11,11 +11,11 @@ type Props = {
 export default function AdoptableSearch({ onResults, onStart }: Props) {
 	const [q, setQ] = useState<string>('');
 	const [loading, setLoading] = useState<boolean>(false);
-	const [relevanceSelected, setRelevanceSelected] = useState<boolean>(false);
+	const [relevanceSelected, setRelevanceSelected] = useState<boolean>(true);
 	const [onlyMyPokemonSelected, setOnlyMyPokemonSelected] =
 		useState<boolean>(false);
 
-	const { userId } = useAuth();
+	const { userId, isAdmin } = useAuth();
 
 	const fetchResults = async () => {
 		setLoading(true);
@@ -77,30 +77,35 @@ export default function AdoptableSearch({ onResults, onStart }: Props) {
 				</button>
 			</form>
 			<div className='mb-8 mt-4 ml-2 flex gap-4'>
-				<Switch.Root
-					checked={relevanceSelected}
-					onCheckedChange={(e) => setRelevanceSelected(e.checked)}
-				>
-					<Switch.HiddenInput />
-					<Switch.Control className='ring-1 ring-white text-white'>
-						<Switch.Thumb />
-					</Switch.Control>
-					<Switch.Label>
-						Sort by {relevanceSelected ? 'Relevance' : 'Compatibility'}
-					</Switch.Label>
-				</Switch.Root>
-				<Switch.Root
-					checked={onlyMyPokemonSelected}
-					onCheckedChange={(e) => setOnlyMyPokemonSelected(e.checked)}
-				>
-					<Switch.HiddenInput />
-					<Switch.Control className='ring-1 ring-white text-white'>
-						<Switch.Thumb />
-					</Switch.Control>
-					<Switch.Label>
-						{onlyMyPokemonSelected ? 'Only My Pokémon' : 'All Pokémon'}
-					</Switch.Label>
-				</Switch.Root>
+				{!isAdmin && (
+					<>
+						<Switch.Root
+							checked={relevanceSelected}
+							onCheckedChange={(e) => setRelevanceSelected(e.checked)}
+						>
+							<Switch.HiddenInput />
+							<Switch.Control className='ring-1 ring-white text-white'>
+								<Switch.Thumb />
+							</Switch.Control>
+							<Switch.Label>
+								Sort by {relevanceSelected ? 'Relevance' : 'Compatibility'}
+							</Switch.Label>
+						</Switch.Root>
+
+						<Switch.Root
+							checked={onlyMyPokemonSelected}
+							onCheckedChange={(e) => setOnlyMyPokemonSelected(e.checked)}
+						>
+							<Switch.HiddenInput />
+							<Switch.Control className='ring-1 ring-white text-white'>
+								<Switch.Thumb />
+							</Switch.Control>
+							<Switch.Label>
+								{onlyMyPokemonSelected ? 'Only My Pokémon' : 'All Pokémon'}
+							</Switch.Label>
+						</Switch.Root>
+					</>
+				)}
 			</div>
 		</div>
 	);
