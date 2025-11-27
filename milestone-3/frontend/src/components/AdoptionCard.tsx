@@ -90,8 +90,8 @@ export default function AdoptionCard({
 				throw new Error('Failed to unadopt Pokemon');
 			}
 
-			//onResults({ pid, status: 'available', mine: false });
-			onResults({}); // immediate feedback
+			onResults({ pid, status: 'available', mine: false });
+			//onResults({}); // immediate feedback
 		} catch (err) {
 			console.error(err);
 		}
