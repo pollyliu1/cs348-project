@@ -32,7 +32,7 @@ export default function AdoptableSearch({ onResults, onStart }: Props) {
       );
       url.searchParams.set(
         "all",
-        onlyMyPokemonSelected.toString()
+        (!onlyMyPokemonSelected).toString()
       );
       const response = await fetch(url);
 
@@ -41,7 +41,6 @@ export default function AdoptableSearch({ onResults, onStart }: Props) {
       }
 
       const x = await response.json();
-      console.log("results:", x);
       onStart?.();
       onResults?.(x);
     } catch (err: any) {

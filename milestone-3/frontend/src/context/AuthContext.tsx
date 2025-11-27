@@ -7,7 +7,7 @@ interface AuthContextType {
 	userId: string | null;
 	name: string | null;
 	username: string | null;
-	login: (id: string, name?: string | null, username?: string | null) => void;
+	login: (id: string, isAdmin: boolean, name?: string | null, username?: string | null) => void;
 	logout: () => void;
 	setName: (v: string | null) => void;
 	setUsername: (v: string | null) => void;
@@ -33,12 +33,13 @@ const AuthContext = createContext<AuthContextType>({
 // Function to initialize state from Local Storage
 const getInitialState = () => {
 	const storedUserId = localStorage.getItem('userId');
+	const storedRole = localStorage.getItem('role');
 	const storedName = localStorage.getItem('name');
 	const storedUsername = localStorage.getItem('username');
 	return {
 		isAuthenticated: !!storedUserId, // true if userId exists
 		isSettingUp: false,
-		isAdmin: false,
+		isAdmin: storedRole == "admin",
 		userId: storedUserId || null,
 		name: storedName || null,
 		username: storedUsername || null,
@@ -52,15 +53,17 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [authState, setAuthState] = useState(getInitialState);
 
- 	const login = (id: string, name?: string | null, username?: string | null) => {
+ 	const login = (id: string, isAdmin: boolean, name?: string | null, username?: string | null) => {
  		setAuthState((prev) => ({
  			...prev,
  			isAuthenticated: true,
  			userId: id,
+			isAdmin,
  			name: name ?? prev.name,
  			username: username ?? prev.username,
  		}));
  		localStorage.setItem('userId', id);
+		localStorage.setItem('role', isAdmin ? "admin" : "adopter");
  		if (name) localStorage.setItem('name', name);
  		if (username) localStorage.setItem('username', username);
  	};
@@ -89,6 +92,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		setAuthState((prev) => ({ ...prev, username: value }));
 		if (value === null) localStorage.removeItem('username');
 		else localStorage.setItem('username', value);
+		localStorage.removeItem('role');
 	};
 
 	const setIsSettingUp = (value: boolean) => {

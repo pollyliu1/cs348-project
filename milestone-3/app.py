@@ -183,7 +183,7 @@ def search_adoptable_pokemon():
 	name = request.args.get("name", "").lower()
 	order = request.args.get("order", "relevance")
 	uid = request.args.get("uid", "")
-	showAll = bool(request.args.get("all", "true"))
+	showAll = bool(request.args.get("all", "true") == "true")
 
 	if order == "relevance":
 		with open("./query2_advanced.sql", "r") as f:
@@ -213,11 +213,12 @@ def search_adoptable_pokemon():
 			AND al.log_id = latest.latest_log
 			WHERE al.uid = %s
 			AND al.action_type = 'adopt';
-		""", (uid,))
+		""", (uid, uid))
 
 		mine = set(map(lambda row: row["pid"], mine))
+		print("mine is:", mine)
 
-		return filter(lambda row: row["pid"] in mine, ans)
+		return list(filter(lambda row: row["pid"] in mine, ans))
 	
 
 @app.route("/api/recently-adopted")
