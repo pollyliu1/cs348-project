@@ -1,7 +1,7 @@
-import React, { ReactElement, useState } from 'react';
+import React, { useState } from 'react';
 import type { ApiPokemon } from '../types';
-import { twMerge } from 'tailwind-merge';
 import { POKEMON_TYPES } from '@/constants/types';
+import { FiSearch } from 'react-icons/fi';
 
 type Props = {
 	onResults?: (rows: ApiPokemon[]) => void;
@@ -57,18 +57,22 @@ export default function SearchBar({
 
 	return (
 		<form onSubmit={handleSubmit} className='flex gap-2'>
-			<input
-				value={q}
-				onChange={(e) => setQ(e.target.value)}
-				placeholder='Search by name (e.g., Pikachu)'
-				aria-label='Search by name'
-				className='flex-1 rounded-xl border-2 px-4 placeholder:text-gray-200 text-white py-2 outline-none bg-transparent !fill-transparent border-white rounded-10'
-			/>
+			<div className='relative w-full'>
+				<FiSearch
+					size={14}
+					className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none'
+				/>
+				<input
+					value={q}
+					onChange={(e) => setQ(e.target.value)}
+					placeholder='Search by name (e.g., Pikachu)'
+					aria-label='Search by name'
+					className='bg-white text-gray-800 appearance-none rounded-1.5 w-full pl-8 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:placeholder:text-gray-300 disabled:border-gray-200'
+				/>
+			</div>
+
 			<button
-				className={twMerge(
-					'rounded-xl px-8 rounded-10 py-2 font-medium border-white border-2  rounded-xl',
-					!q && 'opacity-50 cursor-not-allowed'
-				)}
+				className='w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 text-gray-700 bg-gray-300 hover:bg-gray-400 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-800 disabled:text-gray-600'
 				onClick={() => setQ('')}
 				disabled={!q}
 			>
@@ -76,7 +80,7 @@ export default function SearchBar({
 			</button>
 			<button
 				type='submit'
-				className='rounded-xl px-8 rounded-10 py-2 font-medium border-white border-2 fill-transparent disabled:opacity-60'
+				className='w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-0'
 				disabled={loading}
 			>
 				{loading ? 'Searching…' : 'Search'}

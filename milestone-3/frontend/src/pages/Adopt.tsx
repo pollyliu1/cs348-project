@@ -132,7 +132,7 @@ const Adopt = () => {
 					<h1 className='text-5xl text-center font-semibold mt-8'>
 						Adoption Center
 					</h1>
-					<p className='text-center text-gray-50 text-xl mb-4'>
+					<p className='text-center text-gray-50 text-xl my-4'>
 						Adopt a Pokémon!
 					</p>
 					<Tabs.List className={`flex gap-12 ${isAdmin ? '' : 'hidden'}`}>
@@ -155,13 +155,14 @@ const Adopt = () => {
 				<div className='h-[60%] w-full p-8 pt-0 overflow-scroll'>
 					<Tabs.Content value='Adoptable Pokémon'>
 						{isAdmin && (
-							<Button
-								type='button'
-								className='flex ring-white ring-1 px-8 py-6 rounded-12 justify-self-center mb-12'
-								onClick={openModal}
-							>
-								Add New Pokémon
-							</Button>
+							<div className='flex w-full justify-center mb-12'>
+								<button
+									onClick={openModal}
+									className='w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+								>
+									Add New Pokémon
+								</button>
+							</div>
 						)}
 						<AdoptableSearch onResults={(it) => setAdoptablePokemon(it)} />
 						<div className='w-full grid grid-cols-1 sm:grid-cols-2 gap-4 h-full p-4 pt-0'>
@@ -174,23 +175,22 @@ const Adopt = () => {
 									description={pokemon.description}
 									status={pokemon.status}
 									mine={pokemon.mine}
-									onResults={(data: { pid?: number}) => {
-                    if (data["pid"] === undefined) {
-                      setAdoptablePokemon(
-                        (prev) => (
-                          prev.filter((pok: { pid: number }) =>
-                            pok.pid !== pokemon.pid
-                          ) as ApiAdoptablePokemon[]
-                        )
-                      );
-                    } else {
-  										setAdoptablePokemon(
-  											(prev) =>
-  												prev.map((pok: { pid: number }) =>
-  													pok.pid === data.pid ? { ...pok, ...data } : pok
-  												) as ApiAdoptablePokemon[]
-    										);
-                    }
+									onResults={(data: { pid?: number }) => {
+										if (data['pid'] === undefined) {
+											setAdoptablePokemon(
+												(prev) =>
+													prev.filter(
+														(pok: { pid: number }) => pok.pid !== pokemon.pid
+													) as ApiAdoptablePokemon[]
+											);
+										} else {
+											setAdoptablePokemon(
+												(prev) =>
+													prev.map((pok: { pid: number }) =>
+														pok.pid === data.pid ? { ...pok, ...data } : pok
+													) as ApiAdoptablePokemon[]
+											);
+										}
 									}}
 								/>
 							))}
