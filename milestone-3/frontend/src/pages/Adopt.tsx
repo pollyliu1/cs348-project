@@ -179,10 +179,10 @@ const Adopt = () => {
                   name={pokemon.name}
                   description={pokemon.description}
                   status={pokemon.status}
+                  mine={pokemon.mine}
                   onResults={(data: { pid: number }) => {
                     setAdoptablePokemon(
                       (prev) => (
-                        console.log(prev, data),
                         prev.map((pok: { pid: number }) =>
                           pok.pid === data.pid ? { ...pok, ...data } : pok
                         ) as ApiAdoptablePokemon[]
