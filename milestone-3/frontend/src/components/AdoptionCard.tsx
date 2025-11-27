@@ -51,14 +51,14 @@ export default function AdoptionCard({
 		}
 	};
 
-	const adoptPokemon = async (data: { pid: number }) => {
+	const adoptPokemon = async () => {
 		try {
 			const response = await fetch(`/api/adopt-pokemon/${pid}/${userId}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(data),
+				body: JSON.stringify({pid}),
 			});
 
 			if (!response.ok) {
@@ -71,14 +71,14 @@ export default function AdoptionCard({
 		}
 	};
 
-	const unadoptPokemon = async (data: { pid: number }) => {
+	const unadoptPokemon = async () => {
 		try {
 			const response = await fetch(`/api/unadopt-pokemon/${pid}/${userId}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(data),
+				body: JSON.stringify({pid}),
 			});
 
 			if (!response.ok) {
@@ -86,6 +86,26 @@ export default function AdoptionCard({
 			}
 
 			onResults({ pid, status: "available", mine: false });
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const deletePokemon = async () => {
+		try {
+			const response = await fetch(`/api/delete-adoptable-pokemon`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({pid}),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to delete Pokemon");
+			}
+
+			onResults({});
 		} catch (err) {
 			console.error(err);
 		}
@@ -102,7 +122,7 @@ export default function AdoptionCard({
 						type="button"
 						className="flex ring-white ring-1 w-32 rounded-12 justify-self-center mt-4"
 						disabled={status === "taken" && !mine}
-						onClick={mine ? () =>  unadoptPokemon({pid}) : () => adoptPokemon({pid})}
+						onClick={mine ? unadoptPokemon : () => adoptPokemon}
 					>
 						{mine ? "Unadopt" : status === "available" ? "Adopt Me" : "Adopted"}
 					</Button>
@@ -125,7 +145,7 @@ export default function AdoptionCard({
 					onClose={() => setModalOpen(false)}
 					isUpdate={true}
 					existingData={{ nickname, name, description }}
-					onDelete={() => {}}
+					onDelete={deletePokemon}
 				/>
 			</Modal>
 		</>

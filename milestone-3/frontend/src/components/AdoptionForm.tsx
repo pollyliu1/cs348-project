@@ -24,7 +24,6 @@ const AdoptionForm = ({
   existingData,
   onDelete,
 }: AdoptionFormProps) => {
-  console.log("the name I received is: ", existingData?.name, existingData);
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
