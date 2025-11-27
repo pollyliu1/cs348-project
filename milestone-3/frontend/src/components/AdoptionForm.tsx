@@ -14,13 +14,15 @@ type AdoptionFormProps = {
     name: string;
     description: string;
   };
+  onDelete?: () => void;
 };
 
 const AdoptionForm = ({
   handleSubmit,
-  isUpdate,
+  isUpdate = false,
   onClose,
   existingData,
+  onDelete,
 }: AdoptionFormProps) => {
   console.log("the name I received is: ", existingData?.name, existingData);
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -85,14 +87,21 @@ const AdoptionForm = ({
       <div className="flex gap-2 justify-center">
         <Button
           type="button"
-          className="flex ring-white rounded-12 bg-red-400/50 ring-1 w-32 justify-self-center mt-4"
+          className="flex ring-white rounded-12 bg-red-400/50 ring-1 w-28 mr-4 justify-self-center mt-4"
           onClick={onClose}
         >
           Cancel
         </Button>
         <Button
+          type="button"
+          className="flex ring-white rounded-12 bg-red-400/50 ring-1 w-28 justify-self-center mt-4"
+          onClick={() => onDelete?.()}
+        >
+          Delete
+        </Button>
+        <Button
           type="submit"
-          className="flex ring-white rounded-12 ring-1 w-44 justify-self-center mt-4"
+          className="flex ring-white rounded-12 ring-1 w-40 justify-self-center mt-4"
         >
           {isUpdate ? "Update Pokémon" : "Add Pokémon"}
         </Button>

@@ -21,7 +21,7 @@ export default function AdoptionCard({
 	onResults,
 }: AdoptionCardProps) {
 	const [modalOpen, setModalOpen] = useState(false);
-	const {userId} = useAuth();
+	const {userId, isAdmin} = useAuth();
 	const updatePokemon = async (
 		data: {
 			nickname: string;
@@ -84,6 +84,7 @@ export default function AdoptionCard({
 					>
 						{status === "available" ? "Adopt Me" : "Adopted"}
 					</Button>
+					{isAdmin && (
 					<Button
 						type="button"
 						className="flex ring-white bg-black/50 rounded-12 ring-1 w-32 justify-self-center mt-4"
@@ -93,14 +94,16 @@ export default function AdoptionCard({
 					>
 						Edit Me
 					</Button>
+					)}
 				</div>
 			</div>
 			<Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
 				<AdoptionForm
 					handleSubmit={updatePokemon}
 					onClose={() => setModalOpen(false)}
-					isUpdate
+					isUpdate={true}
 					existingData={{ nickname, name, description }}
+					onDelete={() => {}}
 				/>
 			</Modal>
 		</>

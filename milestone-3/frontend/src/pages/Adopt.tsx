@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal } from "@/components/ui/modal";
+import { Tooltip } from "@/components/ui/tooltip";
 import { Button } from "@chakra-ui/react";
 import {
   ApiAdoptablePokemon,
@@ -13,12 +14,13 @@ import AlertComponent from "@/components/ui/AlertComponent";
 import { POKEMON_TYPES } from "@/constants/types";
 import { Tabs } from "@chakra-ui/react";
 import AdoptableSearch from "@/components/AdoptableSearch";
+import { useAuth } from "@/context/AuthContext";
 
 const Adopt = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const { isAdmin } = useAuth();
 
   // API CALLS
   // /api/adoptable-pokemon
@@ -137,27 +139,36 @@ const Adopt = () => {
             Adopt a Pokémon!
           </p>
           <Tabs.List className="flex gap-12">
-            <Tabs.Trigger value="Adoptable Pokémon" disabled={!isAdmin}>
+            <Tabs.Trigger value="Adoptable Pokémon">
               Adoptable Pokémon
             </Tabs.Trigger>
-            <Tabs.Trigger value="Recently Adopted">
-              Recently Adopted
-            </Tabs.Trigger>
-            <Tabs.Trigger value="Most Adopted">Most Adopted</Tabs.Trigger>
+            <Tooltip content="Only admins can view recently adopted Pokémon">
+              <Tabs.Trigger value="Recently Adopted" disabled={!isAdmin}>
+                Recently Adopted
+              </Tabs.Trigger>
+            </Tooltip>
+            <Tooltip content="Only admins can view most adopted Pokémon">
+              <Tabs.Trigger value="Most Adopted" disabled={!isAdmin}>
+                Most Adopted
+              </Tabs.Trigger>
+            </Tooltip>
           </Tabs.List>
         </div>
-        <Modal isOpen={modalOpen} onClose={closeModal}>
+        <Modal isOpen={modalOpen} onClose={closeModal} >
           <AdoptionForm handleSubmit={handleSubmit} onClose={closeModal} />
         </Modal>
         <div className="h-[60%] w-full p-8 pt-0 overflow-scroll">
           <Tabs.Content value="Adoptable Pokémon">
-            <Button
-              type="button"
-              className="flex ring-white ring-1 px-8 py-6 rounded-12 justify-self-center mb-12"
-              onClick={openModal}
-            >
-              Add New Pokémon
-            </Button>
+            <Tooltip content="Only admins can add new Pokémon">
+              <Button
+                type="button"
+                className="flex ring-white ring-1 px-8 py-6 rounded-12 justify-self-center mb-12"
+                onClick={openModal}
+                disabled={!isAdmin}
+              >
+                Add New Pokémon
+              </Button>
+            </Tooltip>
             <AdoptableSearch onResults={(it) => setAdoptablePokemon(it)} />
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 h-full p-4 pt-0">
               {adoptablePokemon.map((pokemon) => (
