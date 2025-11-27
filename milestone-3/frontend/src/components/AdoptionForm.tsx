@@ -1,5 +1,4 @@
 import React from 'react';
-import { Field, Input, Textarea, Button } from '@chakra-ui/react';
 
 type AdoptionFormProps = {
 	handleSubmit: (data: {
@@ -15,6 +14,7 @@ type AdoptionFormProps = {
 		description: string;
 	};
 	onDelete?: () => void;
+	status?: 'available' | 'taken' | '';
 };
 
 const AdoptionForm = ({
@@ -23,6 +23,7 @@ const AdoptionForm = ({
 	onClose,
 	existingData,
 	onDelete,
+	status = '',
 }: AdoptionFormProps) => {
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -96,11 +97,11 @@ const AdoptionForm = ({
 						Cancel
 					</button>
 					<div className='flex flex-grow gap-2 justify-end'>
-						{isUpdate && (
+						{isUpdate && status !== 'taken' && (
 							<button
 								type='button'
 								onClick={() => onDelete?.()}
-								className='w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 text-white bg-red-400/50 hover:bg-red-400/70 transition-colors'
+								className='w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 text-white bg-red-400 hover:bg-red-500 transition-colors'
 							>
 								Delete
 							</button>

@@ -146,6 +146,7 @@ export default function AdoptionCard({
 					isUpdate={true}
 					existingData={{ nickname, name, description }}
 					onDelete={deletePokemon}
+					status={status}
 				/>
 			</Modal>
 		</>
