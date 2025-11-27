@@ -68,3 +68,29 @@ Admins can update nickname and description of an existing listing. The UI loads 
 
 **Performance:**  
 No new index added. The primary key index on `pid` already supports efficient updates.
+
+---
+
+### 4. Update Adoptable Pokémon Details (R10)
+
+**Frontend File:** `AdoptionCard.tsx`  
+**Backend Endpoint:** `PUT /api/update-pokemon/{pid}`
+
+**Description:**  
+Allows admins to modify an adoptable Pokémon's nickname and description. The UPDATE query targets a specific `pid` in the `AdoptablePokemon` table and sets new values for `nickname` and `description` fields. This enables admins to refine listing information as needed.
+
+**Performance:**  
+Uses the primary key index on `pid` for efficient row lookup. No additional indexes required since UPDATE operations by primary key are already optimized.
+
+---
+
+### 5. Most Popular Pokémon Species by Adoption Count (R11)
+
+**Frontend File:** `Wiki.tsx`  
+**Backend Endpoint:** `GET /api/popular-pokemon`
+
+**Description:**  
+Displays the most frequently adopted Pokémon species to help identify adoption trends. The query joins `AdoptionLogs`, `AdoptablePokemon`, and `Pokemon` tables, filters for 'adopt' action types, groups by Pokédex number and name, and counts total adoptions. Results are ordered by adoption count in descending order.
+
+**Performance:**  
+Indexes on `pid` in both `AdoptionLogs` and `AdoptablePokemon` optimize the joins. An index on `pokedex_number` in `AdoptablePokemon` speeds up the join to `Pokemon`. The `action_type` filter benefits from an index on `action_type` in `AdoptionLogs` to reduce rows scanned before grouping.
