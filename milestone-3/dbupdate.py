@@ -25,7 +25,7 @@ def ensure_db_updated():
     # Step 3: Commands to run (example)
     commands = [
         "mysql -u root < ./createtables.sql",
-        "mysql -u root < ./populatetables.sql",
+		"mysql --local-infile=1 -u root -p < populatetables.sql",
         "mysql -u root < ./query3_advanced.sql",
         "mysql -u root < ./query4_advanced.sql",
         "mysql -u root < ./query5_advanced.sql"
