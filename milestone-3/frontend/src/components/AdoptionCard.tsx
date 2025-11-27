@@ -122,7 +122,7 @@ export default function AdoptionCard({
 						type="button"
 						className="flex ring-white ring-1 w-32 rounded-12 justify-self-center mt-4"
 						disabled={status === "taken" && !mine}
-						onClick={mine ? unadoptPokemon : () => adoptPokemon}
+						onClick={mine ? unadoptPokemon : () => adoptPokemon()}
 					>
 						{mine ? "Unadopt" : status === "available" ? "Adopt Me" : "Adopted"}
 					</Button>

@@ -39,10 +39,10 @@
 :root {
 	--font-helvetica: 'Helvetica Now Display';
 	--font-pixel: "Pokemon Classic";
-	background-size: cover;
-  	background-position: center;
-  	background-repeat: no-repeat;
 	background-image: url("/src/assets/background.jpg");
+	background-repeat: repeat;
+	background-position: top left;
+	background-size: auto;
 }
 
 html,

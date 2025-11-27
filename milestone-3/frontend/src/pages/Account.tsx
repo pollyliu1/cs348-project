@@ -16,7 +16,7 @@ const Account = () => {
         {isAdmin ? "Yes" : "No"}
       </p>
       <button
-        className="mt-8 px-8 py-3 text-lg font-semibold rounded-2 text-white bg-indigo-600 hover:bg-indigo-700 transition duration-200 shadow-xl transform hover:scale-[1.02]"
+        className="mt-8 px-10 py-3 pb-4 pl-11 text-lg font-semibold rounded-2 text-white bg-indigo-600 hover:bg-indigo-700 transition duration-200 shadow-xl transform hover:scale-[1.02] !font-pixel"
         onClick={logout}
       >
         Logout
