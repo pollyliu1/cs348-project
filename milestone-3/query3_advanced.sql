@@ -1,4 +1,4 @@
--- advanced query 3: trigger to prevent deleting Pokemon if adopted (uses BEFORE trigger)
+-- advanced query 3: auto update Pokemon status based on log addition
 USE PokeAdopt;
 
 DROP TRIGGER IF EXISTS prevent_delete_adopted_pokemon;
