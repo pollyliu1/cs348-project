@@ -72,6 +72,7 @@ export default function SearchBar({
 			</div>
 
 			<button
+				type='button'
 				className='w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 text-gray-700 bg-gray-300 hover:bg-gray-400 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-800 disabled:text-gray-600'
 				onClick={() => setQ('')}
 				disabled={!q}
@@ -83,7 +84,7 @@ export default function SearchBar({
 				className='w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-0'
 				disabled={loading}
 			>
-				{loading ? 'Searching…' : 'Search'}
+				Search
 			</button>
 		</form>
 	);
