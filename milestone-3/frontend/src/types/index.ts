@@ -38,6 +38,7 @@ export type ApiAdoptablePokemon = {
   description: string;
   status: "available" | "taken";
   date_added: Date;
+  mine: boolean;
 };
 
 export type ApiRecentlyAdoptedPokemon = {

@@ -8,6 +8,7 @@ export const samplePokemons: ApiAdoptablePokemon[] = [
     description: "A friendly Electric type that loves berries.",
     status: "available",
     date_added: new Date("2025-01-05"),
+    mine: false,
   },
   {
     pid: 2,
@@ -16,6 +17,7 @@ export const samplePokemons: ApiAdoptablePokemon[] = [
     description: "A fiery companion who warms up any room.",
     status: "taken",
     date_added: new Date("2025-01-03"),
+    mine: false,
   },
   {
     pid: 3,
@@ -24,6 +26,7 @@ export const samplePokemons: ApiAdoptablePokemon[] = [
     description: "Calm, reliable, and great at water fights.",
     status: "available",
     date_added: new Date("2025-01-02"),
+    mine: true,
   },
   {
     pid: 4,
@@ -32,6 +35,7 @@ export const samplePokemons: ApiAdoptablePokemon[] = [
     description: "A gentle Grass type that loves sunlight.",
     status: "taken",
     date_added: new Date("2025-01-01"),
+    mine: false,
   },
   {
     pid: 5,
@@ -40,6 +44,7 @@ export const samplePokemons: ApiAdoptablePokemon[] = [
     description: "A rare Dragon type full of potential.",
     status: "available",
     date_added: new Date("2025-01-06"),
+    mine: true,
   },
 ];
 

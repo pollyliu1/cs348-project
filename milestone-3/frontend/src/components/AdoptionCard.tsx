@@ -9,15 +9,17 @@ type AdoptionCardProps = {
 	name: string; // actual pokemon name
 	description: string;
 	status: "available" | "taken";
+	mine: boolean;
 	onResults: (data: any) => void;
 };
 
 export default function AdoptionCard({
-  pid,
+  	pid,
 	nickname,
 	name,
 	description,
 	status,
+	mine,
 	onResults,
 }: AdoptionCardProps) {
 	const [modalOpen, setModalOpen] = useState(false);
@@ -60,10 +62,30 @@ export default function AdoptionCard({
 			});
 
 			if (!response.ok) {
-				throw new Error("Failed to update Pokemon details");
+				throw new Error("Failed to adopt Pokemon");
 			}
 
-			onResults({ pid, status: "taken" });
+			onResults({ pid, status: "taken", mine: true });
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const unadoptPokemon = async (data: { pid: number }) => {
+		try {
+			const response = await fetch(`/api/unadopt-pokemon/${pid}/${userId}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to unadopt Pokemon");
+			}
+
+			onResults({ pid, status: "available", mine: false });
 		} catch (err) {
 			console.error(err);
 		}
@@ -79,10 +101,10 @@ export default function AdoptionCard({
 					<Button
 						type="button"
 						className="flex ring-white ring-1 w-32 rounded-12 justify-self-center mt-4"
-						disabled={status === "taken"}
-						onClick={() => adoptPokemon({ pid })}
+						disabled={status === "taken" && !mine}
+						onClick={mine ? () =>  unadoptPokemon({pid}) : () => adoptPokemon({pid})}
 					>
-						{status === "available" ? "Adopt Me" : "Adopted"}
+						{mine ? "Unadopt" : status === "available" ? "Adopt Me" : "Adopted"}
 					</Button>
 					<Button
 						type="button"

@@ -24,7 +24,8 @@ def run_query(query, parameters=(), procedure=False):
 	else:
 		cursor.execute(query, parameters)
 		description = cursor.description
-		ret = cursor.fetchall()
+		if description:
+			ret = cursor.fetchall()
 
 	if not description:
 		connection.commit()
@@ -188,36 +189,38 @@ def search_adoptable_pokemon():
 
 	if order == "relevance":
 		with open("./query2_advanced.sql", "r") as f:
-			contents = f.read()
+			contents = f.read().replace("USE PokeAdopt;", "")
 			count = contents.count("water")
 			query = contents.replace("'%water%'", "%s").replace("'water'", "%s")
 		ans = run_query(query, (name, f"%{name}%", name) + (f"%{name}%",) * (count - 3))
 	else:
 		with open("./query1_advanced.sql", "r") as f:
-			query = f.read().replace("205", "%s").replace("'%horn%'", "%s")
+			query = f.read().replace("USE PokeAdopt;", "").replace("205", "%s").replace("'%horn%'", "%s")
 		ans = run_query(query, (uid, f"%{name}%"))
+	
+	mine = run_query(
+		"""
+		SELECT al.pid AS pid
+		FROM AdoptionLogs al
+		JOIN (
+			SELECT pid, MAX(log_id) AS latest_log
+			FROM AdoptionLogs
+			WHERE uid = %s
+			GROUP BY pid
+		) AS latest
+			ON al.pid = latest.pid
+		AND al.log_id = latest.latest_log
+		WHERE al.uid = %s
+		AND al.action_type = 'adopt';
+	""", (uid, uid))
+
+	mine = set(map(lambda row: row["pid"], mine))
+	ans = list(map(lambda row: {**row, "mine": row["pid"] in mine}, ans))
 	
 	if showAll:
 		return ans
 	else:
-		mine = run_query(
-			"""
-			SELECT al.pid AS pid
-			FROM AdoptionLogs al
-			JOIN (
-				SELECT pid, MAX(log_id) AS latest_log
-				FROM AdoptionLogs
-				WHERE uid = %s
-				GROUP BY pid
-			) AS latest
-				ON al.pid = latest.pid
-			AND al.log_id = latest.latest_log
-			WHERE al.uid = %s
-			AND al.action_type = 'adopt';
-		""", (uid, uid))
-
-		mine = set(map(lambda row: row["pid"], mine))
-		return list(filter(lambda row: row["pid"] in mine, ans))
+		return list(filter(lambda row: row["mine"], ans))
 	
 
 @app.route("/api/recently-adopted")
@@ -260,6 +263,13 @@ def set_preferences(uid):
 	except Exception as e:
 		print(e)
 		return jsonify({"error": "Error occurred"}), 400
+
+@app.route("/api/unadopt-pokemon/<int:pid>/<int:uid>", methods=["PUT"])
+def unadopt_pokemon(pid, uid):
+	run_query("INSERT INTO AdoptionLogs (uid, pid, log_date, action_type) " +
+			  "VALUES (%s, %s, CURDATE(), 'unadopt');", (uid, pid))
+	run_query("UPDATE AdoptablePokemon SET status = 'available' WHERE pid = %s;", (pid,))
+	return jsonify({"success": True}), 200
 
 if __name__ == "__main__":
 	app.run(debug=True, port=5000)
