@@ -14,7 +14,7 @@ type AdoptionCardProps = {
 };
 
 export default function AdoptionCard({
-  	pid,
+  pid,
 	nickname,
 	name,
 	description,
