@@ -32,14 +32,14 @@
 }
 
 @font-face {
-  font-family: 'Pokemon Classic';
-  src: url('/fonts/Pokemon Classic.ttf') format('truetype');
+	font-family: 'Pokemon Classic';
+	src: url('/fonts/Pokemon Classic.ttf') format('truetype');
 }
 
 :root {
 	--font-helvetica: 'Helvetica Now Display';
-	--font-pixel: "Pokemon Classic";
-	background-image: url("/src/assets/background.jpg");
+	--font-pixel: 'Pokemon Classic';
+	background-color: oklch(20.8% 0.042 265.755);
 	background-repeat: repeat;
 	background-position: top left;
 	background-size: auto;
