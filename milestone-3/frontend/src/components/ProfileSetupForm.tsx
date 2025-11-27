@@ -40,6 +40,7 @@ export default function ProfileSetupForm() {
 							Step 1: Select up to 3 preferred types
 						</label>
 						<SearchableMultiSelect
+							placeholder='Search and select types...'
 							options={POKEMON_TYPES}
 							selectedItems={prefTypes}
 							onSelectionChange={(newSelection) => setPrefTypes(newSelection)}
@@ -50,6 +51,7 @@ export default function ProfileSetupForm() {
 							Step 2: Select up to 3 preferred abilities
 						</label>
 						<SearchableMultiSelect
+							placeholder='Search and select abilities...'
 							options={POKEMON_ABILITIES}
 							selectedItems={prefAbilities}
 							onSelectionChange={(newSelection) =>

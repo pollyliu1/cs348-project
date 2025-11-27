@@ -12,7 +12,7 @@ export default function SearchableMultiSelect({
 	options,
 	selectedItems,
 	onSelectionChange,
-	placeholder = 'Search and select abilities...',
+	placeholder = '',
 }: SearchableMultiSelectProps) {
 	const [inputValue, setInputValue] = useState('');
 	const [isOpen, setIsOpen] = useState(false);
