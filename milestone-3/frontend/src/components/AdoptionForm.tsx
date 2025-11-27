@@ -38,7 +38,7 @@ const AdoptionForm = ({
 	return (
 		<>
 			<div className='flex flex-col items-center'>
-				<h2 className='mt-3 text-3xl font-extrabold text-gray-900'>
+				<h2 className='mb-3 mt-4 text-3xl font-extrabold text-gray-900'>
 					{isUpdate ? 'Update Pokemon Details' : 'Add New Pokemon for Adoption'}
 				</h2>
 			</div>
