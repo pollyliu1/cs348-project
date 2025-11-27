@@ -271,5 +271,13 @@ def unadopt_pokemon(pid, uid):
 	run_query("UPDATE AdoptablePokemon SET status = 'available' WHERE pid = %s;", (pid,))
 	return jsonify({"success": True}), 200
 
+@app.route("/api/delete-adoptable-pokemon", methods=["POST"])
+def delete_adoptable_pokemon():
+	data = request.json
+	pid = data.get("pid")
+	run_query("DELETE FROM AdoptablePokemon " +
+			  "WHERE pid = %s;", (pid,))
+	return jsonify({"success": True}), 200
+
 if __name__ == "__main__":
 	app.run(debug=True, port=5000)

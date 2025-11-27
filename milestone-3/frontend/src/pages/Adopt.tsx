@@ -174,13 +174,23 @@ const Adopt = () => {
 									description={pokemon.description}
 									status={pokemon.status}
 									mine={pokemon.mine}
-									onResults={(data: { pid: number }) => {
-										setAdoptablePokemon(
-											(prev) =>
-												prev.map((pok: { pid: number }) =>
-													pok.pid === data.pid ? { ...pok, ...data } : pok
-												) as ApiAdoptablePokemon[]
-										);
+									onResults={(data: { pid?: number}) => {
+                    if (data["pid"] === undefined) {
+                      setAdoptablePokemon(
+                        (prev) => (
+                          prev.filter((pok: { pid: number }) =>
+                            pok.pid !== pokemon.pid
+                          ) as ApiAdoptablePokemon[]
+                        )
+                      );
+                    } else {
+  										setAdoptablePokemon(
+  											(prev) =>
+  												prev.map((pok: { pid: number }) =>
+  													pok.pid === data.pid ? { ...pok, ...data } : pok
+  												) as ApiAdoptablePokemon[]
+    										);
+                    }
 									}}
 								/>
 							))}
