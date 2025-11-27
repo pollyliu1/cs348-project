@@ -1,84 +1,7 @@
 import mysql.connector
 from flask import Flask, jsonify, send_from_directory, request
-import os
 
 app = Flask(__name__)
-
-def init_database():
-	"""Initialize database by running createtables.sql and populatetables.sql if needed"""
-	try:
-		# Check if database exists and has tables
-		connection = mysql.connector.connect(
-			host="localhost",
-			user="root",
-			password="",
-			database="PokeAdopt"
-		)
-		cursor = connection.cursor()
-		cursor.execute("SHOW TABLES;")
-		tables = cursor.fetchall()
-		cursor.close()
-		connection.close()
-		
-		# If tables exist, skip initialization
-		if len(tables) > 0:
-			print("✓ Database already initialized")
-			return
-	except mysql.connector.Error as err:
-		print(f"Database not found or error: {err}")
-		print("Creating database and tables...")
-	
-	# Run createtables.sql
-	try:
-		connection = mysql.connector.connect(
-			host="localhost",
-			user="root",
-			password=""
-		)
-		cursor = connection.cursor()
-		
-		with open("createtables.sql", "r") as f:
-			sql_commands = f.read()
-			# Split by semicolon and execute each command
-			for command in sql_commands.split(';'):
-				command = command.strip()
-				if command:
-					cursor.execute(command)
-		
-		connection.commit()
-		cursor.close()
-		connection.close()
-		print("✓ Tables created successfully")
-	except Exception as e:
-		print(f"Error creating tables: {e}")
-		return
-	
-	# Run populatetables.sql
-	try:
-		connection = mysql.connector.connect(
-			host="localhost",
-			user="root",
-			password="",
-			database="PokeAdopt",
-			allow_local_infile=True
-		)
-		cursor = connection.cursor()
-		
-		with open("populatetables.sql", "r") as f:
-			sql_commands = f.read()
-			# Split by semicolon and execute each command
-			for command in sql_commands.split(';'):
-				command = command.strip()
-				if command:
-					cursor.execute(command)
-		
-		connection.commit()
-		cursor.close()
-		connection.close()
-		print("✓ Data populated successfully")
-	except Exception as e:
-		print(f"Error populating data: {e}")
-		print("You may need to run: mysql --local-infile=1 -u root -p < populatetables.sql")
 
 def run_query(query, parameters=(), procedure=False):
 	connection = mysql.connector.connect(
@@ -357,8 +280,4 @@ def delete_adoptable_pokemon():
 	return jsonify({"success": True}), 200
 
 if __name__ == "__main__":
-	# Initialize database on startup
-	print("Checking database initialization...")
-	init_database()
-	print("Starting Flask server...")
 	app.run(debug=True, port=5000)
