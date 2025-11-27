@@ -2,6 +2,8 @@
 -- (all available and already adopted Pokemon with their details)
 USE PokeAdopt;
 
+DROP VIEW IF EXISTS AdoptablePokemonView;
+
 CREATE VIEW AdoptablePokemonView AS
 SELECT 
     AdoptablePokemon.pid AS pid

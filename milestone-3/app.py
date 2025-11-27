@@ -1,5 +1,8 @@
 import mysql.connector
 from flask import Flask, jsonify, send_from_directory, request
+from dbupdate import ensure_db_updated
+
+ensure_db_updated()
 
 app = Flask(__name__)
 

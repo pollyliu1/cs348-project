@@ -54,8 +54,8 @@ CREATE TABLE AdoptablePokemon (
 
 CREATE TABLE AdoptionLogs (
     log_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    uid INT NOT NULL REFERENCES Adopter(uid),
-    pid INT NOT NULL REFERENCES AdoptablePokemon(pid),
+    uid INT NOT NULL REFERENCES Adopter(uid) ON DELETE CASCADE,
+    pid INT NOT NULL REFERENCES AdoptablePokemon(pid) ON DELETE CASCADE,
     log_date DATE NOT NULL,
     action_type ENUM('adopt', 'unadopt') NOT NULL
 );
