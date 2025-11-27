@@ -19,7 +19,7 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
 					justifyContent='center'
 					minH='100vh'
 				>
-					<Dialog.Content className='w-full max-w-md bg-white rounded-3 p-10 space-y-6'>
+					<Dialog.Content className='w-full max-w-md bg-white rounded-3 p-5 space-y-6'>
 						<Dialog.Body mt={2}>{children}</Dialog.Body>
 						<Dialog.CloseTrigger asChild>
 							<CloseButton
