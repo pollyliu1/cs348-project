@@ -1,3 +1,6 @@
+-- basic feature 4: update an adoptable Pokemon's details
+--      allows admins to modify Pokemon nickname and description
+
 USE PokeAdopt;
 
 UPDATE AdoptablePokemon

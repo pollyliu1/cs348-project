@@ -1,3 +1,6 @@
+-- basic feature 3: add a new Pokemon to the adoption center
+--      allows admins to make new Pokemon available for adoption
+
 USE PokeAdopt;
 
 INSERT INTO AdoptablePokemon (

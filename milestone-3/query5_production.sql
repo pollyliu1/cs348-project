@@ -1,3 +1,6 @@
+-- basic feature 5: view most popular Pokemon species by adoption count
+--      shows which Pokemon species are most frequently adopted to identify trends
+
 USE PokeAdopt;
 
 SELECT

@@ -1,3 +1,8 @@
+-- advanced feature 5: stored procedures for user authentication and adopter profile management
+-- CreateAdopter: registers a new user and creates their adopter profile with default empty preferences
+-- CheckUser: validates user login credentials using hashed password
+-- UpdateAdopter: updates an adopter's preferred Pokemon abilities and types after authentication
+
 DELIMITER $$
 
 DROP PROCEDURE IF EXISTS CreateAdopter;

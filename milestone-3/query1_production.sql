@@ -1,4 +1,5 @@
--- For example, search Pokémon with fire type and sort by base happiness descending
+-- basic feature 1: search Pokemon by type and sort by base happiness
+--      allows users to find Pokemon of a specific type ordered by how friendly they are
 
 USE PokeAdopt;
 

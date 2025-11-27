@@ -1,3 +1,6 @@
+-- basic feature 2: view recent adoptions within the last 30 days
+--      displays adoption history to show which Pokemon were recently adopted
+
 USE PokeAdopt;
 
 SELECT
