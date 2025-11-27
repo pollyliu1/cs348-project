@@ -47,12 +47,13 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 			});
 
 			if (!response.ok) {
-				setError(await response.text());
+				setError((await response.json())["error"]);
+				return;
 			}
 
 			const res = await response.json();
 
-			login(res['uid'], res['role'] == "admin", name, username);
+			login(res['uid'], res['role'] == "admin", res['name'], username);
 
 			// navigate to adopt if signin successful
 			if (isLogin) {

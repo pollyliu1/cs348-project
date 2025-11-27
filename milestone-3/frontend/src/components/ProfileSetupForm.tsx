@@ -6,17 +6,32 @@ import { POKEMON_ABILITIES } from '@/constants/abilities';
 import { useAuth } from '@/context/AuthContext';
 
 export default function ProfileSetupForm() {
-	const { setIsSettingUp } = useAuth();
+	const { setIsSettingUp, userId } = useAuth();
 	const [prefAbilities, setPrefAbilities] = useState<string[]>([]);
 	const [prefTypes, setPrefTypes] = useState<string[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleSubmit = (e: FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
-		// api call to POST user prefs
 		try {
-		} catch (e) {
+			const response = await fetch(`/api/set-preferences/${userId}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					uid: userId,
+					pref_types: prefTypes,
+					pref_abilities: prefAbilities
+				}),
+			});
+
+			if (!response.ok) {
+				console.log("error is: ", await response.text());
+			}
+		} catch (err: any) {
+			console.log(err.toString());
 		} finally {
 			setIsLoading(false);
 			setIsSettingUp(false);

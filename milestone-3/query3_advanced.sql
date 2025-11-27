@@ -1,4 +1,5 @@
 -- advanced query 3: trigger to prevent deleting Pokemon if adopted (uses BEFORE trigger)
+USE PokeAdopt;
 
 -- change terminator from ; to $$
 DELIMITER $$

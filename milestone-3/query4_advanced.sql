@@ -1,5 +1,6 @@
 -- advanced feature 4: view for a commonly used subquery
 -- (all available and already adopted Pokemon with their details)
+USE PokeAdopt;
 
 CREATE VIEW AdoptablePokemonView AS
 SELECT 

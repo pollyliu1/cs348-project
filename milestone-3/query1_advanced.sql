@@ -7,6 +7,8 @@
 --   +15 points if any ability matches user's preferred abilities
 -- higher score = better compatibility
 
+USE PokeAdopt;
+
 SELECT
     AdoptablePokemon.pid AS pid
     , AdoptablePokemon.nickname AS nickname

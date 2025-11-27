@@ -3,7 +3,7 @@ from flask import Flask, jsonify, send_from_directory, request
 
 app = Flask(__name__)
 
-def run_query(query, parameters=()):
+def run_query(query, parameters=(), procedure=False):
 	connection = mysql.connector.connect(
 		host="localhost",
 		user="root",
@@ -12,18 +12,30 @@ def run_query(query, parameters=()):
 	)
 
 	cursor = connection.cursor()
-	cursor.execute(query, parameters)
 
-	if not cursor.description:
+	if procedure:
+		cursor.callproc(query, parameters)
+		results = list(cursor.stored_results())
+		if len(results) > 0:
+			description = results[0].description
+			ret = results[0].fetchall()
+		else:
+			description = ret = None
+	else:
+		cursor.execute(query, parameters)
+		description = cursor.description
+		ret = cursor.fetchall()
+
+	if not description:
 		connection.commit()
 		cursor.close()
 		connection.close()
 		return
 
-	col_names = [x[0] for x in cursor.description]
+	col_names = [x[0] for x in description]
 	data = []
 
-	for row in cursor.fetchall():
+	for row in ret:
 		data.append(dict(zip(col_names, row)))
 
 	cursor.close()
@@ -77,7 +89,7 @@ def adoptable_pokemon():
 
 @app.route("/api/adopt-pokemon/<int:pid>/<int:uid>", methods=["PUT"])
 def adopt_pokemon(pid, uid):
-	run_query("INSERT INTO AdoptionLogs (uid, pid, log_date, action_type)" +
+	run_query("INSERT INTO AdoptionLogs (uid, pid, log_date, action_type) " +
 			  "VALUES (%s, %s, CURDATE(), 'adopt');", (uid, pid))
 	run_query("UPDATE AdoptablePokemon SET status = 'taken' WHERE pid = %s;", (pid,))
 	return jsonify({"success": True}), 200
@@ -126,17 +138,8 @@ def create_account():
 	username = data.get("username", "")
 	password = data.get("password", "")
 	try:
-		run_query(
-			"INSERT INTO User (name, username, password) " +
-			"VALUES (%s, %s, MD5(%s));",
-			(name, username, password)
-		)
+		run_query("CreateAdopter", (name, username, password), True)
 
-		run_query(
-			"INSERT INTO Adopter (uid, pref_abilities, pref_types) " +
-			"VALUES ((SELECT uid FROM User WHERE username = %s), '[]', '[]');",
-			(username,)
-		)
 		return jsonify({
 			"pref_types": "[]",
 			"pref_abilities": "[]",
@@ -144,9 +147,9 @@ def create_account():
 			"name": name,
 			"role": "adopter"
 		})
-	except:
+	except Exception as e:
+		print(e)
 		return jsonify({"error": "Invalid username or password"}), 400
-	return ""
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -154,10 +157,8 @@ def login():
 	username = data.get("username", "")
 	password = data.get("password", "")
 	try:
-		res = run_query(
-			"SELECT * FROM User WHERE username = %s AND password = MD5(%s);",
-			(username, password)
-		)
+		res = run_query("CheckUser", (username, password), True)
+		print("here")
 
 		if len(res) == 0:
 			return jsonify({"error": "Invalid username or password"}), 400
@@ -174,9 +175,9 @@ def login():
 			"name": res[0]["name"],
 			"role": "admin" if len(res2) == 0 else "adopter"
 		})
-	except:
+	except Exception as e:
+		print(e)
 		return jsonify({"error": "Invalid username or password"}), 400
-	return ""
 
 @app.route("/api/search-adoptable-pokemon")
 def search_adoptable_pokemon():
@@ -216,8 +217,6 @@ def search_adoptable_pokemon():
 		""", (uid, uid))
 
 		mine = set(map(lambda row: row["pid"], mine))
-		print("mine is:", mine)
-
 		return list(filter(lambda row: row["pid"] in mine, ans))
 	
 
@@ -232,7 +231,7 @@ def recently_adopted():
 		JOIN Pokemon ON Pokemon.pokedex_number = AdoptablePokemon.pokedex_number
 		WHERE action_type = 'adopt'
 		ORDER BY log_date DESC;
-	""");
+	""")
 
 @app.route("/api/most-adopted")
 def most_adopted():
@@ -247,7 +246,20 @@ def most_adopted():
 		GROUP BY pokedexNumber
 		ORDER BY totalAdoptions DESC, name
 		LIMIT %s;
-	""", (limit,));
+	""", (limit,))
+
+@app.route("/api/set-preferences/<int:uid>", methods=["PUT"])
+def set_preferences(uid):
+	try:
+		data = request.json
+		change = lambda s: s.__repr__().replace("'", "\"").replace(", ", ",")
+		pref_abilities = change(data.get("pref_abilities", ""))
+		pref_types = change(data.get("pref_types", ""))
+		run_query("UpdateAdopterPreferences", (uid, pref_abilities, pref_types), True)
+		return jsonify({"success": True}), 200
+	except Exception as e:
+		print(e)
+		return jsonify({"error": "Error occurred"}), 400
 
 if __name__ == "__main__":
 	app.run(debug=True, port=5000)

@@ -10,6 +10,8 @@
 --   +40 points for match in AdoptablePokemon description
 --   +10 points for match in abilities
 
+USE PokeAdopt;
+
 SELECT 
     AdoptablePokemon.pid AS pid
     , AdoptablePokemon.nickname AS nickname
