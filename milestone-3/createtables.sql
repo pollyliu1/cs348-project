@@ -7,6 +7,10 @@ DROP TABLE IF EXISTS Pokemon;
 DROP TABLE IF EXISTS Admin;
 DROP TABLE IF EXISTS Adopter;
 DROP TABLE IF EXISTS User;
+DROP VIEW IF EXISTS AdoptablePokemonView;
+DROP PROCEDURE IF EXISTS CreateAdopter;
+DROP PROCEDURE IF EXISTS CheckUser;
+DROP PROCEDURE IF EXISTS UpdateAdopterPreferences;
 
 CREATE TABLE User (
     uid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -87,3 +91,79 @@ ON AdoptionLogs(uid);
 -- Query 5: top pokemon by adoption count query
 CREATE INDEX idx_adoptablepokemon_pokedex
 ON AdoptablePokemon(pokedex_number);
+
+-- View for adoptable Pokemon with full details
+CREATE VIEW AdoptablePokemonView AS
+SELECT 
+    ap.pid,
+    ap.pokedex_number,
+    ap.nickname,
+    ap.date_added,
+    ap.description,
+    ap.status,
+    p.name,
+    p.type1,
+    p.type2,
+    p.classification,
+    p.height,
+    p.weight,
+    p.generation,
+    p.is_legendary,
+    p.abilities,
+    p.base_happiness,
+    p.hp,
+    p.attack,
+    p.defense,
+    p.speed
+FROM AdoptablePokemon ap
+JOIN Pokemon p ON ap.pokedex_number = p.pokedex_number;
+
+-- Stored Procedures
+DELIMITER //
+
+-- CreateAdopter: Creates a new adopter account
+CREATE PROCEDURE CreateAdopter(
+    IN p_name VARCHAR(30),
+    IN p_username VARCHAR(30),
+    IN p_password CHAR(32)
+)
+BEGIN
+    DECLARE new_uid INT;
+    
+    -- Insert into User table
+    INSERT INTO User (username, password, name)
+    VALUES (p_username, p_password, p_name);
+    
+    -- Get the newly created user ID
+    SET new_uid = LAST_INSERT_ID();
+    
+    -- Insert into Adopter table with default empty preferences
+    INSERT INTO Adopter (uid, pref_abilities, pref_types)
+    VALUES (new_uid, '[]', '[]');
+END //
+
+-- CheckUser: Validates user credentials and returns user info
+CREATE PROCEDURE CheckUser(
+    IN p_username VARCHAR(30),
+    IN p_password CHAR(32)
+)
+BEGIN
+    SELECT uid, name
+    FROM User
+    WHERE username = p_username AND password = p_password;
+END //
+
+-- UpdateAdopterPreferences: Updates adopter's preferences
+CREATE PROCEDURE UpdateAdopterPreferences(
+    IN p_uid INT,
+    IN p_pref_abilities VARCHAR(100),
+    IN p_pref_types VARCHAR(100)
+)
+BEGIN
+    UPDATE Adopter
+    SET pref_abilities = p_pref_abilities,
+        pref_types = p_pref_types
+    WHERE uid = p_uid;
+END //
+
+DELIMITER ;
