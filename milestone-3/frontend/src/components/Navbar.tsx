@@ -1,13 +1,17 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 
 const NavBar = () => {
 	const nav = useNavigate();
 	const { isAuthenticated } = useAuth();
-
+	const location = useLocation();
+	const isLanding = location.pathname === '/';
+	console.log(isLanding);
 	return (
-		<div className='flex flex-col fixed top-0 left-0 z-50 w-screen bg-slate-900'>
+		<div
+			className={`flex flex-col fixed top-0 left-0 z-50 w-screen ${isLanding ? '' : 'bg-slate-900'}`}
+		>
 			<div className='z-30 flex justify-between items-center px-6 py-4'>
 				<div
 					className='text-2xl text-white font-semibold font-display mb-1 cursor-pointer hover:text-indigo-400 transition'
