@@ -53,7 +53,7 @@ export default function AuthForm({ isLogin }: AuthFormProps) {
 			const res = await response.json();
 			console.log('uid is ', res['uid']);
 
-			login(res['uid']);
+			login(res['uid'], name, username);
 
 			// navigate to adopt if signin successful
 			if (isLogin) {

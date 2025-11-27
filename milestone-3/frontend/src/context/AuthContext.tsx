@@ -5,8 +5,12 @@ interface AuthContextType {
 	isSettingUp: boolean;
 	isAdmin: boolean;
 	userId: string | null;
-	login: (id: string) => void;
+	name: string | null;
+	username: string | null;
+	login: (id: string, name?: string | null, username?: string | null) => void;
 	logout: () => void;
+	setName: (v: string | null) => void;
+	setUsername: (v: string | null) => void;
 	setIsSettingUp: (v: boolean) => void;
 	setIsAdmin: (v: boolean) => void;
 }
@@ -16,8 +20,12 @@ const AuthContext = createContext<AuthContextType>({
 	isSettingUp: false,
 	isAdmin: false,
 	userId: null,
+	name: null,
+	username: null,
 	login: () => {},
 	logout: () => {},
+	setName: () => {},
+	setUsername: () => {},
 	setIsSettingUp: () => {},
 	setIsAdmin: () => {},
 });
@@ -25,11 +33,15 @@ const AuthContext = createContext<AuthContextType>({
 // Function to initialize state from Local Storage
 const getInitialState = () => {
 	const storedUserId = localStorage.getItem('userId');
+	const storedName = localStorage.getItem('name');
+	const storedUsername = localStorage.getItem('username');
 	return {
 		isAuthenticated: !!storedUserId, // true if userId exists
 		isSettingUp: false,
 		isAdmin: false,
 		userId: storedUserId || null,
+		name: storedName || null,
+		username: storedUsername || null,
 	};
 };
 
@@ -40,23 +52,43 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [authState, setAuthState] = useState(getInitialState);
 
-	const login = (id: string) => {
-		setAuthState((prev) => ({
-			...prev,
-			isAuthenticated: true,
-			userId: id,
-		}));
-		localStorage.setItem('userId', id);
+ 	const login = (id: string, name?: string | null, username?: string | null) => {
+ 		setAuthState((prev) => ({
+ 			...prev,
+ 			isAuthenticated: true,
+ 			userId: id,
+ 			name: name ?? prev.name,
+ 			username: username ?? prev.username,
+ 		}));
+ 		localStorage.setItem('userId', id);
+ 		if (name) localStorage.setItem('name', name);
+ 		if (username) localStorage.setItem('username', username);
+ 	};
+
+ 	const logout = () => {
+ 		setAuthState({
+ 			isAuthenticated: false,
+ 			isSettingUp: false,
+ 			userId: null,
+ 			name: null,
+ 			username: null,
+ 			isAdmin: false,
+ 		});
+ 		localStorage.removeItem('userId');
+ 		localStorage.removeItem('name');
+ 		localStorage.removeItem('username');
+ 	};
+
+	const setName = (value: string | null) => {
+		setAuthState((prev) => ({ ...prev, name: value }));
+		if (value === null) localStorage.removeItem('name');
+		else localStorage.setItem('name', value);
 	};
 
-	const logout = () => {
-		setAuthState({
-			isAuthenticated: false,
-			isSettingUp: false,
-			userId: null,
-			isAdmin: false,
-		});
-		localStorage.removeItem('userId');
+	const setUsername = (value: string | null) => {
+		setAuthState((prev) => ({ ...prev, username: value }));
+		if (value === null) localStorage.removeItem('username');
+		else localStorage.setItem('username', value);
 	};
 
 	const setIsSettingUp = (value: boolean) => {
@@ -77,6 +109,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		...authState,
 		setIsSettingUp,
 		setIsAdmin,
+		setName,
+		setUsername,
 		login,
 		logout,
 	};
