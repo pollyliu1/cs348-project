@@ -126,14 +126,16 @@ export default function AdoptionCard({
 					{!isAdmin && (
 						<button
 							className='w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-0'
-							disabled={status === 'taken' && !mine}
-							onClick={mine ? unadoptPokemon : () => adoptPokemon()}
+							disabled={isAdmin || (status === 'taken' && !mine)}
+							onClick={mine ? unadoptPokemon : adoptPokemon}
 						>
 							{mine
 								? 'Unadopt'
-								: status === 'available'
-									? 'Adopt Me'
-									: 'Adopted'}
+								: status === 'taken'
+								? 'Adopted'
+								: isAdmin
+								? 'Available'
+								: 'Adopt Me'}
 						</button>
 					)}
 

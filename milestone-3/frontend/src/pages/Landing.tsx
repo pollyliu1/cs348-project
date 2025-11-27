@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
+import bg from '../assets/background.jpg';
 
 const Landing = () => {
 	const navigate = useNavigate();
@@ -20,7 +21,7 @@ const Landing = () => {
 		<div
 			className='overflow-none h-screen w-screen flex flex-col justify-center items-center p-6'
 			style={{
-				backgroundImage: `url("/src/assets/background.jpg")`,
+				backgroundImage: `url(${bg})`,
 				backgroundSize: 'cover',
 			}}
 		>
