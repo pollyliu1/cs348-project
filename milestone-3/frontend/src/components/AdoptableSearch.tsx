@@ -86,8 +86,8 @@ export default function AdoptableSearch({ onResults, onStart }: Props) {
 				{!isAdmin && (
 					<>
 						<Switch.Root
-							checked={relevanceSelected}
-							onCheckedChange={(e) => setRelevanceSelected(e.checked)}
+							checked={!relevanceSelected}
+							onCheckedChange={(e) => setRelevanceSelected(!e.checked)}
 						>
 							<Switch.HiddenInput />
 							<Switch.Control className='ring-1 ring-white text-white'>
