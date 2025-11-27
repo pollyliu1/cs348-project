@@ -30,6 +30,10 @@ export default function AdoptableSearch({ onResults, onStart }: Props) {
         "order",
         relevanceSelected ? "relevance" : "compatibility"
       );
+      url.searchParams.set(
+        "all",
+        onlyMyPokemonSelected.toString()
+      );
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -73,7 +77,7 @@ export default function AdoptableSearch({ onResults, onStart }: Props) {
           <Switch.Control className="ring-1 ring-white text-white">
             <Switch.Thumb />
           </Switch.Control>
-          <Switch.Label>Sort by Relevance</Switch.Label>
+          <Switch.Label>Sort by {relevanceSelected ? "Relevance" : "Compatibility"}</Switch.Label>
         </Switch.Root>
         <Switch.Root
           checked={onlyMyPokemonSelected}
@@ -83,7 +87,7 @@ export default function AdoptableSearch({ onResults, onStart }: Props) {
           <Switch.Control className="ring-1 ring-white text-white">
             <Switch.Thumb />
           </Switch.Control>
-          <Switch.Label>Only My Pokémon</Switch.Label>
+          <Switch.Label>{onlyMyPokemonSelected ? "Only My Pokémon" : "All Pokémon"}</Switch.Label>
         </Switch.Root>
       </div>
     </div>
