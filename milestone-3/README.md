@@ -20,6 +20,11 @@ If you are ever prompted for a password, just hit enter.
 ```bash
 mysql -u root -p < createtables.sql
 mysql --local-infile=1 -u root -p < populatetables.sql
+mysql -u root -p < query1_advanced.sql
+mysql -u root -p < query2_advanced.sql
+mysql -u root -p < query3_advanced.sql
+mysql -u root -p < query4_advanced.sql
+mysql -u root -p < query5_advanced.sql
 ```
 
 ## Query the database to test
