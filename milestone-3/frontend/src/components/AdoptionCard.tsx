@@ -90,7 +90,8 @@ export default function AdoptionCard({
 				throw new Error('Failed to unadopt Pokemon');
 			}
 
-			onResults({ pid, status: 'available', mine: false });
+			//onResults({ pid, status: 'available', mine: false });
+			onResults({}); // immediate feedback
 		} catch (err) {
 			console.error(err);
 		}
@@ -125,17 +126,17 @@ export default function AdoptionCard({
 				<div className='flex gap-4 w-full items-center justify-end'>
 					{!isAdmin && (
 						<button
-							className='w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-0'
+							className={`w-fit flex justify-center py-2 px-4 border border-transparent text-md font-medium rounded-1.5 ${!mine ? 'text-white bg-indigo-600 hover:bg-indigo-700' : 'bg-red-600 hover:bg-red-700'} disabled:bg-slate-800 disabled:text-slate-600 focus:outline-none focus:ring-0`}
 							disabled={isAdmin || (status === 'taken' && !mine)}
 							onClick={mine ? unadoptPokemon : adoptPokemon}
 						>
 							{mine
 								? 'Unadopt'
 								: status === 'taken'
-								? 'Adopted'
-								: isAdmin
-								? 'Available'
-								: 'Adopt Me'}
+									? 'Adopted'
+									: isAdmin
+										? 'Available'
+										: 'Adopt Me'}
 						</button>
 					)}
 

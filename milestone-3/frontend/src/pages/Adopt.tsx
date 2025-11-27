@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Modal } from '@/components/ui/modal';
-import { Button } from '@chakra-ui/react';
 import {
 	ApiAdoptablePokemon,
 	ApiMostAdoptedPokemon,
