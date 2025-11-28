@@ -35,10 +35,23 @@ SELECT * FROM Pokemon LIMIT 5;
 
 ## Implemented Features
 
-### 1. Recent Adoptions (R6)
+### 1. Browse Available Pokemon (R6)
 
-**Frontend Files:** `Wiki.tsx`, `SearchBar.tsx`  
+**Frontend Files:** `Wiki.tsx`  
 **Backend Endpoint:** `GET /api/search-pokemon`
+
+**Description:**
+The user visits the search page on the Pokémon Adoption website. A check-list menu lets them select a Pokémon type (Fire, Water, Grass, etc). They can choose a sorting order such as Base Happiness ascending or descending.
+
+**Performance:**  
+For this query, indexes were added on `type1`, `type2`, and `base_happiness` in the Pokemon table.
+
+---
+
+### 2. Monitor Recent Adoption Activity (R7)
+
+**Frontend File:** `Adopt.tsx`  
+**Backend Endpoint:** `GET /api/recently-adopted`
 
 **Description:**  
 Allows admins to view Pokémon adopted in the last 30 days. The UI displays a table with Pokémon name, nickname, adopter username, and adoption date. The backend query joins `AdoptablePokemon` and `AdoptionLogs` and filters by `log_date`.
@@ -48,7 +61,7 @@ Indexes were added on `log_date` and `pid` in `AdoptionLogs` to reduce scan and 
 
 ---
 
-### 2. Create New Adoptable Pokémon (R8)
+### 3. Create New Adoptable Pokémon (R8)
 
 **Frontend File:** `Adopt.tsx`  
 **Backend Endpoint:** `POST /api/add-pokemon`
@@ -61,7 +74,7 @@ No extra indexes created. Inserts already use the primary key index on `pid`.
 
 ---
 
-### 3. Edit Existing Adoption Listing (R9)
+### 4. Edit Existing Adoption Listing (R9)
 
 **Frontend File:** `AdoptionCard.tsx`  
 **Backend Endpoint:** `PUT /api/update-pokemon/{pid}`
@@ -74,7 +87,7 @@ No new index added. The primary key index on `pid` already supports efficient up
 
 ---
 
-### 4. Update Adoptable Pokémon Details (R10)
+### 5. Update Adoptable Pokémon Details (R10)
 
 **Frontend File:** `AdoptionCard.tsx`  
 **Backend Endpoint:** `PUT /api/update-pokemon/{pid}`
@@ -87,13 +100,41 @@ Uses the primary key index on `pid` for efficient row lookup. No additional inde
 
 ---
 
-### 5. Most Popular Pokémon Species by Adoption Count (R11)
+### 6. Personalized Pokémon Recommendations (R11)
 
-**Frontend File:** `Wiki.tsx`  
-**Backend Endpoint:** `GET /api/popular-pokemon`
+**Frontend File:** `Adopt.tsx`  
+**Backend Endpoint:** `GET /api/search-adoptable-pokemon?order=compatibility`
 
 **Description:**  
-Displays the most frequently adopted Pokémon species to help identify adoption trends. The query joins `AdoptionLogs`, `AdoptablePokemon`, and `Pokemon` tables, filters for 'adopt' action types, groups by Pokédex number and name, and counts total adoptions. Results are ordered by adoption count in descending order.
+This query computes a compatibility score between each adoptable Pokémon and a specific user by comparing the user's preferred types and abilities stored as JSON arrays with each Pokémon's attributes. It assigns weighted points for matches and sorts the results by total score to present the best recommendations.
 
-**Performance:**  
-Indexes on `pid` in both `AdoptionLogs` and `AdoptablePokemon` optimize the joins. An index on `pokedex_number` in `AdoptablePokemon` speeds up the join to `Pokemon`. The `action_type` filter benefits from an index on `action_type` in `AdoptionLogs` to reduce rows scanned before grouping.
+---
+
+### 7. Full Text Relevance Search (R12)
+
+**Frontend File:** `Adopt.tsx`  
+**Backend Endpoint:** `GET /api/search-adoptable-pokemon?order=relevance`
+
+**Description:**  
+This query performs a full text search across several Pokémon attributes such as name, types, abilities, nickname, and description. It assigns weighted scores based on where matches occur and returns results sorted by overall relevance so users can quickly find suitable Pokémon.
+
+---
+
+### 8. Automatic Adoption Status Triggers (R13)
+
+**Description:**  
+This feature uses AFTER INSERT triggers on the AdoptionLogs table to automatically update Pokémon availability when an adoption or unadoption is recorded. It ensures that each Pokémon's status remains consistent with its adoption history without requiring manual updates.
+
+---
+
+### 9. Unified Adoptable Pokémon View (R14)
+
+**Description:**  
+This view combines data from AdoptablePokemon and Pokémon into a single structure that includes species information along with adoption specific fields. It allows the application to query a unified dataset without rewriting join logic in multiple places.
+
+---
+
+### 10. User Management Stored Procedures (R15)
+
+**Description:**  
+These stored procedures implement core user management operations including account creation with hashed passwords, login verification, and updating user preferences for the recommendation system. They organize authentication and profile logic in the database to keep the application consistent and maintainable.
