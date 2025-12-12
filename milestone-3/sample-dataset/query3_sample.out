@@ -1,5 +1,0 @@
-Note, there is no output for this query, however if we run:
-
-SELECT * FROM AdoptablePokemon;
-
-We can see there is an additional row.
