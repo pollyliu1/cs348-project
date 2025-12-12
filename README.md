@@ -2,7 +2,7 @@
 
 ![Alt text for image](./frontend/src/assets/landing-ss.png)
 
-The following commands assume your current directory is `cs348-project/milestone-3`. Note that the DB setup and query files for production are within this directory, and the counterpart sample files are in the `sample-dataset` subdirectory.
+The following commands assume your current directory is the root of this project. Note that the DB setup and query files for production are within this directory, and the counterpart sample files are in the `sample-dataset` subdirectory.
 
 # Run Application
 
